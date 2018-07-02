@@ -1,0 +1,10 @@
+[Unit]
+Description=linux-status
+
+[Service]
+Type=simple
+WorkingDirectory=/srv/linux-status
+ExecStart=/usr/bin/python3 -m http.server --cgi
+
+[Install]
+WantedBy=default.target
