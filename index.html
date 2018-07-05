@@ -13,7 +13,7 @@
 .button-expand {
     margin-right: 1em;
 }
-h1 {
+h1, .h1 {
     margin-top: 20px;
 }
     </style>
@@ -23,6 +23,16 @@ h1 {
       <div class="row">
         <div class="col">
           <h1 id="hostname">-</h1>
+        </div>
+        <div class="col h1 text-right">
+          <div class="btn-group align-middle" role="group">
+            <a role="button" class="btn btn-sm btn-warning" href="#" onclick="reboot();">Reboot</a>
+            <a role="button" class="btn btn-sm btn-danger" href="#" onclick="shutdown();">Shutdown</a>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
           <hr>
           <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_top">+</button><a href="#collapse_top" data-toggle="collapse"><code>top</code></a> <span class="float-right"><small>updated every <span id="top_refresh_interval">-</span> seconds</small></span></p>
           <div class="collapse" id="collapse_top">
@@ -56,6 +66,14 @@ h1 {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
     <script>
+function reboot() {
+    $.get('cgi-bin/reboot.sh');
+}
+
+function shutdown() {
+    $.get('cgi-bin/poweroff.sh');
+}
+
 function refresh_hostname() {
     $.get('cgi-bin/hostname.sh', function(data) {
         $('#hostname').text(data);
