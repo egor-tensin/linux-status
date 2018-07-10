@@ -49,6 +49,16 @@ h1, .h1 {
             <pre class="height-limited" id="systemctl_status_user"></pre>
           </div>
           <hr>
+          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_systemctl_failed_system">+</button><a href="#collapse_systemctl_failed_system" data-toggle="collapse"><code>systemctl --system list-units --failed</code></a></p>
+          <div class="collapse" id="collapse_systemctl_failed_system">
+            <pre class="height-limited" id="systemctl_failed_system"></pre>
+          </div>
+          <hr>
+          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_systemctl_failed_user">+</button><a href="#collapse_systemctl_failed_user" data-toggle="collapse"><code>systemctl --user list-units --failed</code></a></p>
+          <div class="collapse" id="collapse_systemctl_failed_user">
+            <pre class="height-limited" id="systemctl_failed_user"></pre>
+          </div>
+          <hr>
           <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_systemctl_timers_system">+</button><a href="#collapse_systemctl_timers_system" data-toggle="collapse"><code>systemctl --system list-timers --all</code></a> <span class="float-right"><small>updated every <span id="systemctl_timers_system_refresh_interval">-</span> seconds</small></span></p>
           <div class="collapse" id="collapse_systemctl_timers_system">
             <pre class="height-limited" id="systemctl_timers_system"></pre>
@@ -98,6 +108,18 @@ function refresh_systemctl_status_user() {
     });
 }
 
+function refresh_systemctl_failed_system() {
+    $.get('cgi-bin/systemctl_failed_system.sh', function(data) {
+        $('#systemctl_failed_system').text(data);
+    });
+}
+
+function refresh_systemctl_failed_user() {
+    $.get('cgi-bin/systemctl_failed_user.sh', function(data) {
+        $('#systemctl_failed_user').text(data);
+    });
+}
+
 function refresh_systemctl_timers_system() {
     $.get('cgi-bin/systemctl_timers_system.sh', function(data) {
         $('#systemctl_timers_system').text(data);
@@ -115,6 +137,8 @@ function refresh() {
     refresh_top();
     refresh_systemctl_status_system();
     refresh_systemctl_status_user();
+    refresh_systemctl_failed_system();
+    refresh_systemctl_failed_user();
     refresh_systemctl_timers_system();
     refresh_systemctl_timers_user();
 }
