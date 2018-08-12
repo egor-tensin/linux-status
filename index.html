@@ -35,6 +35,16 @@ h1, .h1 {
             <pre class="pre-scrollable" id="top"></pre>
           </div>
           <hr>
+          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_systemctl_failed_system">+</button><a href="#collapse_systemctl_failed_system" data-toggle="collapse"><code>systemctl --system list-units --failed</code></a></p>
+          <div class="collapse show" id="collapse_systemctl_failed_system">
+            <pre class="pre-scrollable" id="systemctl_failed_system"></pre>
+          </div>
+          <hr>
+          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_systemctl_failed_user">+</button><a href="#collapse_systemctl_failed_user" data-toggle="collapse"><code>systemctl --user list-units --failed</code></a></p>
+          <div class="collapse show" id="collapse_systemctl_failed_user">
+            <pre class="pre-scrollable" id="systemctl_failed_user"></pre>
+          </div>
+          <hr>
           <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_systemctl_status_system">+</button><a href="#collapse_systemctl_status_system" data-toggle="collapse"><code>systemctl --system status</code></a></p>
           <div class="collapse" id="collapse_systemctl_status_system">
             <pre class="pre-scrollable" id="systemctl_status_system"></pre>
@@ -43,16 +53,6 @@ h1, .h1 {
           <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_systemctl_status_user">+</button><a href="#collapse_systemctl_status_user" data-toggle="collapse"><code>systemctl --user status</code></a></p>
           <div class="collapse" id="collapse_systemctl_status_user">
             <pre class="pre-scrollable" id="systemctl_status_user"></pre>
-          </div>
-          <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_systemctl_failed_system">+</button><a href="#collapse_systemctl_failed_system" data-toggle="collapse"><code>systemctl --system list-units --failed</code></a></p>
-          <div class="collapse" id="collapse_systemctl_failed_system">
-            <pre class="pre-scrollable" id="systemctl_failed_system"></pre>
-          </div>
-          <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_systemctl_failed_user">+</button><a href="#collapse_systemctl_failed_user" data-toggle="collapse"><code>systemctl --user list-units --failed</code></a></p>
-          <div class="collapse" id="collapse_systemctl_failed_user">
-            <pre class="pre-scrollable" id="systemctl_failed_user"></pre>
           </div>
           <hr>
           <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_systemctl_timers_system">+</button><a href="#collapse_systemctl_timers_system" data-toggle="collapse"><code>systemctl --system list-timers --all</code></a> <span class="float-right"><small>updated every <span id="systemctl_timers_system_refresh_interval">-</span> seconds</small></span></p>
