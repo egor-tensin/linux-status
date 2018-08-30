@@ -4,7 +4,7 @@ Description=linux-status
 [Service]
 Type=simple
 WorkingDirectory=/srv/linux-status
-ExecStart=/usr/bin/python3 -m http.server --cgi 8101
+ExecStart=/usr/bin/python3 -m http.server --cgi 18101
 
 [Install]
 WantedBy=default.target
