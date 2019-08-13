@@ -3,32 +3,12 @@ linux-status
 
 Simple Linux status web pages.
 
-Deployment
-----------
+Usage
+-----
 
-Clone to /srv/linux-status and use [config-links]:
+To start a web server on port 18101:
 
-    > pwd
-    /srv/linux-status
-
-    > ~/workspace/personal/config-links/update.sh
-    ...
-
-or just copy linux-status.service from this repository to your $HOME:
-
-    > pwd
-    /srv/linux-status
-
-    > mkdir -p ~/.config/systemd/user/
-    > cp '%HOME%/.config/systemd/user/linux-status.service' ~/.config/systemd/user/
-
-Enable & start the service:
-
-    > loginctl enable-linger "$( whoami )"
-    > systemctl --user enable linux-status
-    > systemctl --user start linux-status
-
-[config-links]: https://github.com/egor-tensin/config-links
+    > python3 -m http.server --cgi 18101
 
 License
 -------
