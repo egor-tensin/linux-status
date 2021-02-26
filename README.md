@@ -3,6 +3,15 @@ linux-status
 
 Simple Linux status web pages.
 
+Shows your `top`, systemd units & timers, etc.
+
+What it looks like
+------------------
+
+![Example page][example]
+
+[example]: img/example.png "Example page"
+
 Usage
 -----
 
