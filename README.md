@@ -23,6 +23,12 @@ There's also a [systemd unit] that you can adjust to run the server.
 
 [systemd unit]: systemd/linux-status.service
 
+TODO
+----
+
+* Show an error if a AJAX call fails.
+* Dedupe scripts in cgi-bin.
+
 License
 -------
 Distributed under the MIT License.
