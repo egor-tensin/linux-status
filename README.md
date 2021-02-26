@@ -3,7 +3,7 @@ linux-status
 
 Simple Linux status web pages.
 
-Shows your `top`, systemd units & timers, etc.
+Shows your `top`, systemd units & timers, allows you to reboot, etc.
 
 What it looks like
 ------------------
@@ -18,6 +18,10 @@ Usage
 To start a web server on port 18101:
 
     > python3 -m http.server --cgi 18101
+
+There's also a [systemd unit] that you can adjust to run the server.
+
+[systemd unit]: systemd/linux-status.service
 
 License
 -------
