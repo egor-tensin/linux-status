@@ -21,7 +21,7 @@ To start a web server on port 18101:
 
 There's also a [systemd unit] that you can adjust to run the server.
 
-[systemd unit]: systemd/linux-status.service
+[systemd unit]: dist/systemd/linux-status.service
 
 TODO
 ----
