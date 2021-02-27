@@ -79,64 +79,33 @@ function shutdown() {
     $.get('cgi-bin/poweroff.sh');
 }
 
-function refresh_hostname() {
-    $.get('cgi-bin/hostname.sh', function(data) {
-        $('#hostname').text(data);
-        $('title').text(data);
-    });
-}
-
 function refresh_top() {
-    $.get('cgi-bin/top.sh', function(data) {
-        $('#top').text(data);
+    $.get('cgi-bin/get.py?what=top', function(data) {
+        $('#top').text(JSON.parse(data));
     });
 }
 
-function refresh_systemctl_status_system() {
-    $.get('cgi-bin/systemctl_status_system.sh', function(data) {
-        $('#systemctl_status_system').text(data);
+function refresh_timers() {
+    $.get('cgi-bin/get.py?what=timers', function(data) {
+        data = JSON.parse(data);
+        $('#systemctl_timers_system').text(data['system']['timers']);
+        $('#systemctl_timers_user').text(data['user']['timers']);
     });
 }
 
-function refresh_systemctl_status_user() {
-    $.get('cgi-bin/systemctl_status_user.sh', function(data) {
-        $('#systemctl_status_user').text(data);
+function refresh_status() {
+    $.get('cgi-bin/get.py?what=status', function(data) {
+        data = JSON.parse(data);
+        $('#hostname').text(data['hostname']);
+        $('title').text(data['hostname']);
+        $('#top').text(data['top']);
+        $('#systemctl_failed_system').text(data['system']['failed']);
+        $('#systemctl_failed_user').text(data['user']['failed']);
+        $('#systemctl_status_system').text(data['system']['overview']);
+        $('#systemctl_status_user').text(data['user']['overview']);
+        $('#systemctl_timers_system').text(data['system']['timers']);
+        $('#systemctl_timers_user').text(data['user']['timers']);
     });
-}
-
-function refresh_systemctl_failed_system() {
-    $.get('cgi-bin/systemctl_failed_system.sh', function(data) {
-        $('#systemctl_failed_system').text(data);
-    });
-}
-
-function refresh_systemctl_failed_user() {
-    $.get('cgi-bin/systemctl_failed_user.sh', function(data) {
-        $('#systemctl_failed_user').text(data);
-    });
-}
-
-function refresh_systemctl_timers_system() {
-    $.get('cgi-bin/systemctl_timers_system.sh', function(data) {
-        $('#systemctl_timers_system').text(data);
-    });
-}
-
-function refresh_systemctl_timers_user() {
-    $.get('cgi-bin/systemctl_timers_user.sh', function(data) {
-        $('#systemctl_timers_user').text(data);
-    });
-}
-
-function refresh() {
-    refresh_hostname();
-    refresh_top();
-    refresh_systemctl_status_system();
-    refresh_systemctl_status_user();
-    refresh_systemctl_failed_system();
-    refresh_systemctl_failed_user();
-    refresh_systemctl_timers_system();
-    refresh_systemctl_timers_user();
 }
 
 var top_refresh_interval_seconds = 5;
@@ -146,24 +115,23 @@ function loop_top() {
     $('#top_refresh_interval').text(top_refresh_interval_seconds);
 }
 
-var systemctl_timers_refresh_interval_seconds = 30;
+var timers_refresh_interval_seconds = 30;
 
-function loop_systemctl_timers() {
+function loop_timers() {
     setInterval(function() {
-        refresh_systemctl_timers_system();
-        refresh_systemctl_timers_user();
-    }, systemctl_timers_refresh_interval_seconds * 1000);
-    $('#systemctl_timers_system_refresh_interval').text(systemctl_timers_refresh_interval_seconds);
-    $('#systemctl_timers_user_refresh_interval').text(systemctl_timers_refresh_interval_seconds);
+        refresh_timers();
+    }, timers_refresh_interval_seconds * 1000);
+    $('#systemctl_timers_system_refresh_interval').text(timers_refresh_interval_seconds);
+    $('#systemctl_timers_user_refresh_interval').text(timers_refresh_interval_seconds);
 }
 
 function loop() {
     loop_top();
-    loop_systemctl_timers();
+    loop_timers();
 }
 
 function main() {
-    refresh();
+    refresh_status();
     loop();
 }
 

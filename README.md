@@ -27,7 +27,6 @@ TODO
 ----
 
 * Show an error if a AJAX call fails.
-* Dedupe scripts in cgi-bin.
 
 License
 -------
