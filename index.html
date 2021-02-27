@@ -107,7 +107,7 @@ function add_user(name) {
         return;
     }
     let text = `
-<div class="row">
+<div class="row" id="user_${name}">
   <div class="col">
     <h2>${name}</h2>
     <hr>
@@ -147,6 +147,15 @@ function set_user(name, data) {
 }
 
 function set_users(data) {
+    users.forEach(function(name) {
+        if (!(name in data)) {
+            $('#user_' + name).remove();
+            let i = users.indexOf(name);
+            if (i > -1) {
+                users.splice(i, 1);
+            }
+        }
+    });
     Object.keys(data).forEach(function(name) {
         set_user(name, data[name]);
     });
