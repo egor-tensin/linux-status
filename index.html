@@ -35,37 +35,24 @@ h1, .h1 {
             <pre class="pre-scrollable" id="top"></pre>
           </div>
           <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_systemctl_failed_system">+</button><a href="#collapse_systemctl_failed_system" data-toggle="collapse"><code>systemctl --system list-units --failed</code></a></p>
-          <div class="collapse show" id="collapse_systemctl_failed_system">
-            <pre class="pre-scrollable" id="systemctl_failed_system"></pre>
+          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_failed_system">+</button><a href="#collapse_failed_system" data-toggle="collapse"><code>systemctl --system list-units --failed</code></a></p>
+          <div class="collapse show" id="collapse_failed_system">
+            <pre class="pre-scrollable" id="failed_system"></pre>
           </div>
           <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_systemctl_failed_user">+</button><a href="#collapse_systemctl_failed_user" data-toggle="collapse"><code>systemctl --user list-units --failed</code></a></p>
-          <div class="collapse show" id="collapse_systemctl_failed_user">
-            <pre class="pre-scrollable" id="systemctl_failed_user"></pre>
+          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_overview_system">+</button><a href="#collapse_overview_system" data-toggle="collapse"><code>systemctl --system status</code></a></p>
+          <div class="collapse" id="collapse_overview_system">
+            <pre class="pre-scrollable" id="overview_system"></pre>
           </div>
           <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_systemctl_status_system">+</button><a href="#collapse_systemctl_status_system" data-toggle="collapse"><code>systemctl --system status</code></a></p>
-          <div class="collapse" id="collapse_systemctl_status_system">
-            <pre class="pre-scrollable" id="systemctl_status_system"></pre>
-          </div>
-          <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_systemctl_status_user">+</button><a href="#collapse_systemctl_status_user" data-toggle="collapse"><code>systemctl --user status</code></a></p>
-          <div class="collapse" id="collapse_systemctl_status_user">
-            <pre class="pre-scrollable" id="systemctl_status_user"></pre>
-          </div>
-          <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_systemctl_timers_system">+</button><a href="#collapse_systemctl_timers_system" data-toggle="collapse"><code>systemctl --system list-timers --all</code></a> <span class="float-right"><small>refreshed every <span id="systemctl_timers_system_refresh_interval">-</span> seconds</small></span></p>
-          <div class="collapse" id="collapse_systemctl_timers_system">
-            <pre class="pre-scrollable" id="systemctl_timers_system"></pre>
-          </div>
-          <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_systemctl_timers_user">+</button><a href="#collapse_systemctl_timers_user" data-toggle="collapse"><code>systemctl --user list-timers --all</code></a> <span class="float-right"><small>refreshed every <span id="systemctl_timers_user_refresh_interval">-</span> seconds</small></span></p>
-          <div class="collapse" id="collapse_systemctl_timers_user">
-            <pre class="pre-scrollable" id="systemctl_timers_user"></pre>
+          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_timers_system">+</button><a href="#collapse_timers_system" data-toggle="collapse"><code>systemctl --system list-timers --all</code></a> <span class="float-right"><small>refreshed every <span id="timers_system_refresh_interval">-</span> seconds</small></span></p>
+          <div class="collapse" id="collapse_timers_system">
+            <pre class="pre-scrollable" id="timers_system"></pre>
           </div>
           <hr>
         </div>
+      </div>
+      <div id="users">
       </div>
     </div>
     <script src="js/jquery-3.3.1.min.js"></script>
@@ -79,32 +66,18 @@ function shutdown() {
     $.get('cgi-bin/poweroff.sh');
 }
 
+function set_hostname(data) {
+    $('#hostname').text(data);
+    $('title').text(data);
+}
+
+function set_top(data) {
+    $('#top').text(data);
+}
+
 function refresh_top() {
-    $.get('cgi-bin/get.py?what=top', function(data) {
-        $('#top').text(JSON.parse(data));
-    });
-}
-
-function refresh_timers() {
-    $.get('cgi-bin/get.py?what=timers', function(data) {
-        data = JSON.parse(data);
-        $('#systemctl_timers_system').text(data['system']['timers']);
-        $('#systemctl_timers_user').text(data['user']['timers']);
-    });
-}
-
-function refresh_status() {
-    $.get('cgi-bin/get.py?what=status', function(data) {
-        data = JSON.parse(data);
-        $('#hostname').text(data['hostname']);
-        $('title').text(data['hostname']);
-        $('#top').text(data['top']);
-        $('#systemctl_failed_system').text(data['system']['failed']);
-        $('#systemctl_failed_user').text(data['user']['failed']);
-        $('#systemctl_status_system').text(data['system']['overview']);
-        $('#systemctl_status_user').text(data['user']['overview']);
-        $('#systemctl_timers_system').text(data['system']['timers']);
-        $('#systemctl_timers_user').text(data['user']['timers']);
+    $.get('cgi-bin/get.sh?what=top', function(data) {
+        set_top(JSON.parse(data));
     });
 }
 
@@ -115,14 +88,95 @@ function loop_top() {
     $('#top_refresh_interval').text(top_refresh_interval_seconds);
 }
 
+function set_system(data) {
+    if ('failed' in data) {
+        $('#failed_system').text(data['failed']);
+    }
+    if ('overview' in data) {
+        $('#overview_system').text(data['overview']);
+    }
+    if ('timers' in data) {
+        $('#timers_system').text(data['timers']);
+    }
+}
+
+var users = [];
+
+function add_user(name) {
+    if (users.includes(name)) {
+        return;
+    }
+    let text = `
+<div class="row">
+  <div class="col">
+    <h2>${name}</h2>
+    <hr>
+    <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_failed_user_${name}">+</button><a href="#collapse_failed_user_${name}" data-toggle="collapse"><code>systemctl --user list-units --failed</code></a></p>
+    <div class="collapse show" id="collapse_failed_user_${name}">
+      <pre class="pre-scrollable" id="failed_user_${name}"></pre>
+    </div>
+    <hr>
+    <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_overview_user_${name}">+</button><a href="#collapse_overview_user_${name}" data-toggle="collapse"><code>systemctl --user status</code></a></p>
+    <div class="collapse" id="collapse_overview_user_${name}">
+      <pre class="pre-scrollable" id="overview_user_${name}"></pre>
+    </div>
+    <hr>
+    <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_timers_user_${name}">+</button><a href="#collapse_timers_user_${name}" data-toggle="collapse"><code>systemctl --user list-timers --all</code></a> <span class="float-right"><small>refreshed every <span id="timers_user_refresh_interval_${name}">${timers_refresh_interval_seconds}</span> seconds</small></span></p>
+    <div class="collapse" id="collapse_timers_user_${name}">
+      <pre class="pre-scrollable" id="timers_user_${name}"></pre>
+    </div>
+    <hr>
+  </div>
+</div>
+`;
+    $('#users').append(text);
+    users.push(name);
+}
+
+function set_user(name, data) {
+    add_user(name);
+    if ('failed' in data) {
+        $('#failed_user_' + name).text(data['failed']);
+    }
+    if ('overview' in data) {
+        $('#overview_user_' + name).text(data['overview']);
+    }
+    if ('timers' in data) {
+        $('#timers_user_' + name).text(data['timers']);
+    }
+}
+
+function set_users(data) {
+    Object.keys(data).forEach(function(name) {
+        set_user(name, data[name]);
+    });
+}
+
+function refresh_status() {
+    $.get('cgi-bin/get.sh?what=status', function(data) {
+        data = JSON.parse(data);
+        set_top(data['top']);
+        set_hostname(data['hostname']);
+        set_system(data['system']);
+        set_users(data['user']);
+    });
+}
+
+function refresh_timers() {
+    $.get('cgi-bin/get.sh?what=timers', function(data) {
+        data = JSON.parse(data);
+        set_system(data['system']);
+        set_users(data['user']);
+    });
+}
+
 var timers_refresh_interval_seconds = 30;
 
 function loop_timers() {
     setInterval(function() {
         refresh_timers();
     }, timers_refresh_interval_seconds * 1000);
-    $('#systemctl_timers_system_refresh_interval').text(timers_refresh_interval_seconds);
-    $('#systemctl_timers_user_refresh_interval').text(timers_refresh_interval_seconds);
+    $('#timers_system_refresh_interval').text(timers_refresh_interval_seconds);
 }
 
 function loop() {
