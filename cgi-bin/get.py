@@ -6,7 +6,7 @@
 # Distributed under the MIT License.
 
 import abc
-import cgi, cgitb
+import cgi
 from collections import namedtuple
 from concurrent.futures import ThreadPoolExecutor
 import json
@@ -38,15 +38,8 @@ def headers():
     print()
 
 
-def debugging():
-    # TODO: figure out how to include this on the web page
-    #cgitb.enable()
-    pass
-
-
 def setup():
     headers()
-    debugging()
 
 
 def format_response(response):
