@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+# Copyright (c) 2021 Egor Tensin <Egor.Tensin@gmail.com>
+# This file is part of the "linux-status" project.
+# For details, see https://github.com/egor-tensin/linux-status.
+# Distributed under the MIT License.
+
 import abc
 import cgi, cgitb
 from collections import namedtuple
