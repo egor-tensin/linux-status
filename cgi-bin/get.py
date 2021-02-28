@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
+import abc
 import cgi, cgitb
 from collections import namedtuple
+from concurrent.futures import ThreadPoolExecutor
 import json
 import os
 import pwd
@@ -20,6 +22,10 @@ def split_by(xs, sep):
         else:
             group.append(x)
     yield group
+
+
+def hostname():
+    return socket.gethostname()
 
 
 def headers():
@@ -42,9 +48,16 @@ def format_response(response):
     return json.dumps(response, ensure_ascii=False)
 
 
-def run(*args, **kwargs):
+def run_do(*args, **kwargs):
     output = subprocess.run(args, stdin=DEVNULL, stdout=PIPE, stderr=STDOUT, universal_newlines=True, **kwargs)
     return output.stdout
+
+
+pool = ThreadPoolExecutor()
+
+
+def run(*args, **kwargs):
+    return pool.submit(run_do, *args, **kwargs)
 
 
 class Command:
@@ -106,13 +119,115 @@ class Loginctl(Systemd):
         super().__init__('loginctl', *args)
 
 
+class Task(abc.ABC):
+    def complete(self):
+        self.run()
+        return self.result()
+
+    @abc.abstractmethod
+    def run(self):
+        pass
+
+    @abc.abstractmethod
+    def result(self):
+        pass
+
+
+class TopTask(Task):
+    def __init__(self):
+        self.cmd = Command('top', '-b', '-n', '1', '-w', '512')
+
+    def run(self):
+        self.task = self.cmd.run()
+
+    def result(self):
+        return self.task.result()
+
+
+class InstanceStatusTask(Task):
+    def __init__(self, systemctl):
+        self.overview_cmd = systemctl('status')
+        self.failed_cmd = systemctl('list-units', '--failed')
+        self.timers_cmd = systemctl('list-timers', '--all')
+
+    def run(self):
+        self.overview_task = self.overview_cmd.run()
+        self.failed_task = self.failed_cmd.run()
+        self.timers_task = self.timers_cmd.run()
+
+    def result(self):
+        return {
+            'overview': self.overview_task.result(),
+            'failed': self.failed_task.result(),
+            'timers': self.timers_task.result(),
+        }
+
+
+class SystemInstanceStatusTask(InstanceStatusTask):
+    def __init__(self):
+        super().__init__(Systemctl.system)
+
+
+class UserInstanceStatusTask(InstanceStatusTask):
+    def __init__(self, systemctl=Systemctl.user):
+        super().__init__(systemctl)
+
+    @staticmethod
+    def su(user):
+        systemctl = lambda *args: Systemd.su(user.name, Systemctl.user(*args))
+        return UserInstanceStatusTask(systemctl)
+
+
+class UserInstanceStatusTaskList(Task):
+    def __init__(self):
+        if running_as_root():
+            # As root, we can query all the user instances.
+            self.tasks = {user.name: UserInstanceStatusTask.su(user) for user in systemd_users()}
+        else:
+            # As a regular user, we can only query ourselves.
+            self.tasks = {get_current_user().name: UserInstanceStatusTask()}
+
+    def run(self):
+        for task in self.tasks.values():
+            task.run()
+
+    def result(self):
+        return {name: task.result() for name, task in self.tasks.items()}
+
+
+class StatusTask(Task):
+    def __init__(self):
+        self.hostname = hostname()
+        self.top = TopTask()
+        self.system = SystemInstanceStatusTask()
+        self.user = UserInstanceStatusTaskList()
+
+    def run(self):
+        self.top.run()
+        self.system.run()
+        self.user.run()
+
+    def result(self):
+        return {
+            'hostname': self.hostname,
+            'top': self.top.result(),
+            'system': self.system.result(),
+            'user': self.user.result(),
+        }
+
+
+class TimersTask(StatusTask):
+    # TODO: I'm going to remove the timers-only endpoint completely.
+    pass
+
+
 User = namedtuple('User', ['uid', 'name'])
 SystemdUser = namedtuple('SystemdUser', ['uid', 'name', 'runtime_dir'])
 
 
 def running_as_root():
-    # AFAIK, Python's http.server drops root privileges and executes the scripts as
-    # user nobody.
+    # AFAIK, Python's http.server drops root privileges and executes the scripts
+    # as user nobody.
     # It does no such thing if run as a regular user though.
     return os.geteuid() == 0 or running_as_nobody()
 
@@ -164,7 +279,7 @@ def human_users():
 # that were running a systemd instance.
 def systemd_users():
     def list_users():
-        output = Loginctl('list-users', '--no-legend').run()
+        output = Loginctl('list-users', '--no-legend').run().result()
         lines = output.splitlines()
         if not lines:
             return
@@ -181,7 +296,7 @@ def systemd_users():
         properties = 'UID', 'Name', 'RuntimePath'
         prop_args = (arg for prop in properties for arg in ('-p', prop))
         user_args = (user.name for user in users)
-        output = Loginctl('show-user', *prop_args, '--value', *user_args).run()
+        output = Loginctl('show-user', *prop_args, '--value', *user_args).run().result()
         lines = output.splitlines()
         # Assuming that for muptiple users, the properties will be separated by
         # an empty string.
@@ -194,88 +309,15 @@ def systemd_users():
     return show_users(list_users())
 
 
-def hostname():
-    return socket.gethostname()
-
-
-def top():
-    return run('top', '-b', '-n', '1', '-w', '512')
-
-
-def su(user, commands):
-    return {k: Systemd.su(user, cmd) for k, cmd in commands.items()}
-
-
-def run_all(commands):
-    return {k: cmd.run() for k, cmd in commands.items()}
-
-
-def status_system():
-    return {
-        'overview': Systemctl.system('status'),
-        'failed': Systemctl.system('list-units', '--failed'),
-        'timers': Systemctl.system('list-timers', '--all'),
-    }
-
-
-def status_user():
-    return {
-        'overview': Systemctl.user('status'),
-        'failed': Systemctl.user('list-units', '--failed'),
-        'timers': Systemctl.user('list-timers', '--all'),
-    }
-
-
-def timers_system():
-    return {
-        'timers': Systemctl.system('list-timers', '--all'),
-    }
-
-
-def timers_user():
-    return {
-        'timers': Systemctl.user('list-timers', '--all'),
-    }
-
-
-def system(commands):
-    return run_all(commands())
-
-
-def user(commands):
-    if running_as_root():
-        return {user.name: run_all(su(user, commands())) for user in systemd_users()}
-    else:
-        return {get_current_user().name: run_all(commands())}
-
-
-def status():
-    status = {
-        'hostname': hostname(),
-        'top': top(),
-        'system': system(status_system),
-        'user': user(status_user),
-    }
-    return status
-
-
-def timers():
-    timers = {
-        'system': system(timers_system),
-        'user': user(timers_user),
-    }
-    return timers
-
-
 def do():
     params = cgi.FieldStorage()
     what = params['what'].value
     if what == 'status':
-        response = status()
+        response = StatusTask().complete()
     elif what == 'timers':
-        response = timers()
+        response = TimersTask().complete()
     elif what == 'top':
-        response = top()
+        response = TopTask().complete()
     else:
         raise RuntimeError(f'invalid parameter "what": {what}')
     print(format_response(response))
