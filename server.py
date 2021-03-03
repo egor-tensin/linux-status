@@ -16,7 +16,13 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             request = Request.from_http_path(self.path)
         except ValueError:
             return super().do_GET()
-        request.process().write_as_request_handler(self)
+        try:
+            response = request.process()
+        except:
+            self.send_response(http.server.HTTPStatus.INTERNAL_SERVER_ERROR)
+            self.end_headers()
+            return
+        response.write_as_request_handler(self)
 
 
 def main():
