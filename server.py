@@ -7,10 +7,10 @@
 
 import http.server
 
-from get import Request
+from app import Request
 
 
-class RequestHandler(http.server.CGIHTTPRequestHandler):
+class RequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         try:
             request = Request.from_http_path(self.path)
