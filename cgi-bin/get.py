@@ -9,6 +9,7 @@ import abc
 import cgi
 from collections import namedtuple
 from concurrent.futures import ThreadPoolExecutor
+from enum import Enum
 import json
 import os
 import pwd
@@ -33,17 +34,19 @@ def hostname():
     return socket.gethostname()
 
 
-def headers():
-    print("Content-Type: text/html; charset=utf-8")
-    print()
+class Response:
+    def __init__(self, data):
+        self.data = data
 
+    def print(self):
+        print("Content-Type: text/html; charset=utf-8")
+        print()
+        if self.data is not None:
+            print(self.dump_json(self.data))
 
-def setup():
-    headers()
-
-
-def format_response(response):
-    return json.dumps(response, ensure_ascii=False)
+    @staticmethod
+    def dump_json(data):
+        return json.dumps(data, ensure_ascii=False)
 
 
 def run_do(*args, **kwargs):
@@ -120,7 +123,7 @@ class Loginctl(Systemd):
 class Task(abc.ABC):
     def complete(self):
         self.run()
-        return self.result()
+        return Response(self.result())
 
     @abc.abstractmethod
     def run(self):
@@ -307,23 +310,32 @@ def systemd_users():
     return show_users(list_users())
 
 
-def do():
+class Request(Enum):
+    STATUS = 'status'
+    TIMERS = 'timers'
+    TOP = 'top'
+
+    def __str__(self):
+        return self.value
+
+    def process(self):
+        if self is Request.STATUS:
+            return StatusTask().complete()
+        if self is Request.TIMERS:
+            return TimersTask().complete()
+        if self is Request.TOP:
+            return TopTask().complete()
+        raise NotImplementedError(f'unknown request: {self}')
+
+
+def process_cgi_request():
     params = cgi.FieldStorage()
     what = params['what'].value
-    if what == 'status':
-        response = StatusTask().complete()
-    elif what == 'timers':
-        response = TimersTask().complete()
-    elif what == 'top':
-        response = TopTask().complete()
-    else:
-        raise RuntimeError(f'invalid parameter "what": {what}')
-    print(format_response(response))
+    Request(what).process().print()
 
 
 def main():
-    setup()
-    do()
+    process_cgi_request()
 
 
 if __name__ == '__main__':
