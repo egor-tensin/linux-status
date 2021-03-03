@@ -6,6 +6,7 @@
 # Distributed under the MIT License.
 
 import abc
+import cgi
 from collections import namedtuple
 from concurrent.futures import ThreadPoolExecutor
 import json
@@ -15,7 +16,6 @@ import shlex
 import socket
 import subprocess
 from subprocess import DEVNULL, PIPE, STDOUT
-import urllib.parse
 
 
 def split_by(xs, sep):
@@ -308,8 +308,8 @@ def systemd_users():
 
 
 def do():
-    params = urllib.parse.parse_qs(os.environ['QUERY_STRING'])
-    what = params['what'][0]
+    params = cgi.FieldStorage()
+    what = params['what'].value
     if what == 'status':
         response = StatusTask().complete()
     elif what == 'timers':
