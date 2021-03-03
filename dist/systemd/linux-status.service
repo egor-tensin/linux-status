@@ -4,7 +4,7 @@ Description=linux-status
 [Service]
 Type=simple
 WorkingDirectory=/srv/linux-status
-ExecStart=/srv/linux-status/server.py
+ExecStart=/usr/bin/python3 -B server.py
 
 [Install]
 WantedBy=multi-user.target
