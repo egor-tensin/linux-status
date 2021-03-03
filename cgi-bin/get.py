@@ -10,6 +10,7 @@ import cgi
 from collections import namedtuple
 from concurrent.futures import ThreadPoolExecutor
 from enum import Enum
+import http.server
 import json
 import os
 import pwd
@@ -38,15 +39,42 @@ class Response:
     def __init__(self, data):
         self.data = data
 
-    def print(self):
-        print("Content-Type: text/html; charset=utf-8")
-        print()
-        if self.data is not None:
-            print(self.dump_json(self.data))
+    def headers(self):
+        yield 'Content-Type', 'text/html; charset=utf-8'
 
     @staticmethod
     def dump_json(data):
         return json.dumps(data, ensure_ascii=False)
+
+    def body(self):
+        return self.dump_json(self.data)
+
+    def write_as_cgi_script(self):
+        self.write_headers_as_cgi_script()
+        self.write_body_as_cgi_script()
+
+    def write_headers_as_cgi_script(self):
+        for name, val in self.headers():
+            print(f'{name}: {val}')
+        print()
+
+    def write_body_as_cgi_script(self):
+        if self.data is not None:
+            print(self.body())
+
+    def write_as_request_handler(self, handler):
+        handler.send_response(http.server.HTTPStatus.OK)
+        self.write_headers_as_request_handler(handler)
+        self.write_body_as_request_handler(handler)
+
+    def write_headers_as_request_handler(self, handler):
+        for name, val in self.headers():
+            handler.send_header(name, val)
+        handler.end_headers()
+
+    def write_body_as_request_handler(self, handler):
+        if self.data is not None:
+            handler.wfile.write(self.body().encode(errors='replace'))
 
 
 def run_do(*args, **kwargs):
@@ -318,6 +346,12 @@ class Request(Enum):
     def __str__(self):
         return self.value
 
+    @staticmethod
+    def from_http_path(path):
+        if not path or path[0] != '/':
+            raise ValueError('HTTP path must start with a forward slash /')
+        return Request(path[1:])
+
     def process(self):
         if self is Request.STATUS:
             return StatusTask().complete()
@@ -331,7 +365,7 @@ class Request(Enum):
 def process_cgi_request():
     params = cgi.FieldStorage()
     what = params['what'].value
-    Request(what).process().print()
+    Request(what).process().write_as_cgi_script()
 
 
 def main():

@@ -76,7 +76,7 @@ function set_top(data) {
 }
 
 function refresh_top() {
-    $.get('cgi-bin/get.sh?what=top', function(data) {
+    $.get('top', function(data) {
         set_top(JSON.parse(data));
     });
 }
@@ -162,7 +162,7 @@ function set_users(data) {
 }
 
 function refresh_status() {
-    $.get('cgi-bin/get.sh?what=status', function(data) {
+    $.get('status', function(data) {
         data = JSON.parse(data);
         set_top(data['top']);
         set_hostname(data['hostname']);
@@ -172,7 +172,7 @@ function refresh_status() {
 }
 
 function refresh_timers() {
-    $.get('cgi-bin/get.sh?what=timers', function(data) {
+    $.get('timers', function(data) {
         data = JSON.parse(data);
         set_system(data['system']);
         set_users(data['user']);
