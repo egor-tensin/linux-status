@@ -17,7 +17,7 @@ Usage
 
 To start a web server on port 18101:
 
-    > python3 -m http.server --cgi 18101
+    > python3 server.py
 
 There's also a [systemd unit] that you can adjust to run the server.
 

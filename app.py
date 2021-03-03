@@ -5,6 +5,40 @@
 # For details, see https://github.com/egor-tensin/linux-status.
 # Distributed under the MIT License.
 
+# Initially it was just index.html and a bunch of shell scripts in cgi-bin.
+# The web server could be launched using just `python -m http.server --cgi`,
+# and all was well.  Until I decided that I want to package this little app
+# of mine so that it can be easily installed and run on a variety of systems.
+# There was a problem with that, however: the app was designed to be run by
+# a regular user, not root (mostly due to all the `systemctl --user` calls),
+# and it didn't play nicely with the whole package idea.  Plus, I've long
+# wanted to make it show all the systemd user instances, not just the running
+# user's.  In addition, I wanted to dedupe the small chunks of code in cgi-bin.
+#
+# So this script was born.  It could handle a lot more complexity than the
+# shell scripts; it could be run as root and as a regular user, etc.  It was
+# still a CGI script (and it still is BTW), and a separate Python instance was
+# used by the web server to execute it.
+#
+# There was a problem, of course.  The thing is, I for once had a very strict
+# performance requirement for this script: it had to work nicely on my rather
+# old Raspberry Pi 1 Model B+.  It, being a Python script, didn't.  After
+# some investigation, it was obvious that the main problem were the imports
+# (especially those of the cgi & logging modules); they would take more time
+# than the interval between requests.  So I had to find a way to make it more
+# performant.
+#
+# I played with Lua for a bit, but couldn't quite make it work in a
+# satisfactory way.  Then I had an idea: I could use http.server's HTTP server
+# classes, overriding them to handle the "CGI" requests using the code in this
+# script.  That way, the imports would only be done once for the entire life
+# of the server.  In addition, no more tricks with sudo were required
+# (http.server runs CGI scripts as user nobody, which is a no-no for this app;
+# some trickery like whitelisting nobody in /etc/sudoers.d were employed).
+#
+# So that's where we are now, and it works!  Doesn't load my good ol' Raspberry
+# no more.
+
 import abc
 import cgi
 from collections import namedtuple

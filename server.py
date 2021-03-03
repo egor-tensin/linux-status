@@ -5,6 +5,9 @@
 # For details, see https://github.com/egor-tensin/linux-status.
 # Distributed under the MIT License.
 
+# This script launches a HTTP server and uses app.py for processing a set of
+# custom URLs.  See that file for the reasons behind this.
+
 import http.server
 
 from app import Request
