@@ -173,6 +173,28 @@ class TopTask(Task):
         return self.task.result()
 
 
+class RebootTask(Task):
+    def __init__(self):
+        self.cmd = Command('systemctl', 'reboot')
+
+    def run(self):
+        self.task = self.cmd.run()
+
+    def result(self):
+        return self.task.result()
+
+
+class PoweroffTask(Task):
+    def __init__(self):
+        self.cmd = Command('systemctl', 'poweroff')
+
+    def run(self):
+        self.task = self.cmd.run()
+
+    def result(self):
+        return self.task.result()
+
+
 class InstanceStatusTask(Task):
     def __init__(self, systemctl):
         self.overview_cmd = systemctl('status')
@@ -342,6 +364,8 @@ class Request(Enum):
     STATUS = 'status'
     TIMERS = 'timers'
     TOP = 'top'
+    REBOOT = 'reboot'
+    POWEROFF = 'poweroff'
 
     def __str__(self):
         return self.value
@@ -359,6 +383,10 @@ class Request(Enum):
             return TimersTask().complete()
         if self is Request.TOP:
             return TopTask().complete()
+        if self is Request.REBOOT:
+            return RebootTask().complete()
+        if self is Request.POWEROFF:
+            return PoweroffTask().complete()
         raise NotImplementedError(f'unknown request: {self}')
 
 

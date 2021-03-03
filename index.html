@@ -59,11 +59,11 @@ h1, .h1 {
     <script src="js/bootstrap.bundle.min.js"></script>
     <script>
 function reboot() {
-    $.get('cgi-bin/reboot.sh');
+    $.get('reboot');
 }
 
 function shutdown() {
-    $.get('cgi-bin/poweroff.sh');
+    $.get('poweroff');
 }
 
 function set_hostname(data) {
