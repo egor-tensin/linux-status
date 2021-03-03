@@ -225,7 +225,7 @@ class UserInstanceStatusTask(InstanceStatusTask):
 
     @staticmethod
     def su(user):
-        systemctl = lambda *args: Systemd.su(user.name, Systemctl.user(*args))
+        systemctl = lambda *args: Systemd.su(user, Systemctl.user(*args))
         return UserInstanceStatusTask(systemctl)
 
 
