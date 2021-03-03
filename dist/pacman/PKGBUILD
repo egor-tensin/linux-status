@@ -6,7 +6,7 @@ pkgdesc='Simple Linux status web page'
 arch=(any)
 url='https://github.com/egor-tensin/linux-status'
 license=(MIT)
-depends=(python systemd)
+depends=(procps-ng python systemd)
 source=("$pkgname-$pkgver.tar.gz::$url/archive/master.tar.gz")
 md5sums=(SKIP)
 
