@@ -8,9 +8,14 @@
 # This script launches a HTTP server and uses app.py for processing a set of
 # custom URLs.  See that file for the reasons behind this.
 
+import argparse
 import http.server
+import sys
 
 from app import Request
+
+
+DEFAULT_PORT = 18101
 
 
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
@@ -28,8 +33,19 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
         response.write_as_request_handler(self)
 
 
-def main():
-    addr = ('', 18101)
+def parse_args(args=None):
+    if args is None:
+        args = sys.argv[1:]
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--port', metavar='PORT',
+                        type=int, default=DEFAULT_PORT,
+                        help='set port number')
+    return parser.parse_args(args)
+
+
+def main(args=None):
+    args = parse_args(args)
+    addr = ('', args.port)
     httpd = http.server.ThreadingHTTPServer(addr, RequestHandler)
     try:
         httpd.serve_forever()
