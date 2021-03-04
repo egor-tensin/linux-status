@@ -78,7 +78,7 @@ class Response:
 
     @staticmethod
     def dump_json(data):
-        return json.dumps(data, ensure_ascii=False)
+        return json.dumps(data, ensure_ascii=False, indent=4)
 
     def body(self):
         return self.dump_json(self.data)
