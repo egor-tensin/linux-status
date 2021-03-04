@@ -283,27 +283,19 @@ class UserInstanceStatusTaskList(Task):
 class StatusTask(Task):
     def __init__(self):
         self.hostname = hostname()
-        self.top = TopTask()
         self.system = SystemInstanceStatusTask()
         self.user = UserInstanceStatusTaskList()
 
     def run(self):
-        self.top.run()
         self.system.run()
         self.user.run()
 
     def result(self):
         return {
             'hostname': self.hostname,
-            'top': self.top.result(),
             'system': self.system.result(),
             'user': self.user.result(),
         }
-
-
-class TimersTask(StatusTask):
-    # TODO: I'm going to remove the timers-only endpoint completely.
-    pass
 
 
 User = namedtuple('User', ['uid', 'name'])
@@ -396,7 +388,6 @@ def systemd_users():
 
 class Request(Enum):
     STATUS = 'status'
-    TIMERS = 'timers'
     TOP = 'top'
     REBOOT = 'reboot'
     POWEROFF = 'poweroff'
@@ -413,8 +404,6 @@ class Request(Enum):
     def process(self):
         if self is Request.STATUS:
             return StatusTask().complete()
-        if self is Request.TIMERS:
-            return TimersTask().complete()
         if self is Request.TOP:
             return TopTask().complete()
         if self is Request.REBOOT:
