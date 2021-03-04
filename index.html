@@ -19,6 +19,7 @@ h1, .h1 {
       <div class="row">
         <div class="col">
           <h1 id="hostname">-</h1>
+          <p style="margin-bottom: 0;"><small>refreshed every <span id="status_refresh_interval">-</span> seconds</small></p>
         </div>
         <div class="col h1 text-right">
           <div class="btn-group align-middle" role="group">
@@ -45,7 +46,7 @@ h1, .h1 {
             <pre class="pre-scrollable" id="overview_system"></pre>
           </div>
           <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_timers_system">+</button><a href="#collapse_timers_system" data-toggle="collapse"><code>systemctl --system list-timers --all</code></a> <span class="float-right"><small>refreshed every <span id="status_system_refresh_interval">-</span> seconds</small></span></p>
+          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_timers_system">+</button><a href="#collapse_timers_system" data-toggle="collapse"><code>systemctl --system list-timers --all</code></a></p>
           <div class="collapse" id="collapse_timers_system">
             <pre class="pre-scrollable" id="timers_system"></pre>
           </div>
@@ -129,7 +130,7 @@ function add_user(name) {
       <pre class="pre-scrollable" id="overview_user_${name}"></pre>
     </div>
     <hr>
-    <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_timers_user_${name}">+</button><a href="#collapse_timers_user_${name}" data-toggle="collapse"><code>systemctl --user list-timers --all</code></a> <span class="float-right"><small>refreshed every ${status_refresh_interval_seconds} seconds</small></span></p>
+    <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_timers_user_${name}">+</button><a href="#collapse_timers_user_${name}" data-toggle="collapse"><code>systemctl --user list-timers --all</code></a></p>
     <div class="collapse" id="collapse_timers_user_${name}">
       <pre class="pre-scrollable" id="timers_user_${name}"></pre>
     </div>
@@ -192,7 +193,7 @@ function loop_status() {
     setInterval(function() {
         refresh_status();
     }, status_refresh_interval_seconds * 1000);
-    $('#status_system_refresh_interval').text(status_refresh_interval_seconds);
+    $('#status_refresh_interval').text(status_refresh_interval_seconds);
 }
 
 function main() {
