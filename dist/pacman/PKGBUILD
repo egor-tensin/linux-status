@@ -7,6 +7,7 @@ arch=(any)
 url='https://github.com/egor-tensin/linux-status'
 license=(MIT)
 depends=(procps-ng python systemd)
+install=linux-status.install
 source=("$pkgname-$pkgver.tar.gz::$url/archive/master.tar.gz")
 md5sums=(SKIP)
 
