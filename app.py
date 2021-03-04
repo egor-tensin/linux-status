@@ -164,22 +164,32 @@ class Systemd(Command):
         return env
 
 
-class Systemctl(Systemd):
+class Ctl(Systemd):
+    def __init__(self, executable, *args):
+        super().__init__(executable, *args, '--full')
+
+    @classmethod
+    def system(cls, *args):
+        return cls('--system', *args)
+
+    @classmethod
+    def user(cls, *args):
+        return cls('--user', *args)
+
+
+class Systemctl(Ctl):
     def __init__(self, *args):
-        super().__init__('systemctl', *args, '--full')
+        super().__init__('systemctl', *args)
 
-    @staticmethod
-    def system(*args):
-        return Systemctl('--system', *args)
 
-    @staticmethod
-    def user(*args):
-        return Systemctl('--user', *args)
+class Journalctl(Ctl):
+    def __init__(self, *args):
+        super().__init__('journalctl', *args)
 
 
 class Loginctl(Systemd):
     def __init__(self, *args):
-        super().__init__('loginctl', *args)
+        super().__init__('loginctl', *args, '--full')
 
 
 class Task(abc.ABC):
@@ -230,37 +240,41 @@ class PoweroffTask(Task):
 
 
 class InstanceStatusTask(Task):
-    def __init__(self, systemctl):
+    def __init__(self, systemctl, journalctl):
         self.overview_cmd = systemctl('status')
         self.failed_cmd = systemctl('list-units', '--failed')
         self.timers_cmd = systemctl('list-timers', '--all')
+        self.journal_cmd = journalctl('-b', '--lines=20')
 
     def run(self):
         self.overview_task = self.overview_cmd.run()
         self.failed_task = self.failed_cmd.run()
         self.timers_task = self.timers_cmd.run()
+        self.journal_task = self.journal_cmd.run()
 
     def result(self):
         return {
             'overview': self.overview_task.result(),
             'failed': self.failed_task.result(),
             'timers': self.timers_task.result(),
+            'journal': self.journal_task.result(),
         }
 
 
 class SystemInstanceStatusTask(InstanceStatusTask):
     def __init__(self):
-        super().__init__(Systemctl.system)
+        super().__init__(Systemctl.system, Journalctl.system)
 
 
 class UserInstanceStatusTask(InstanceStatusTask):
-    def __init__(self, systemctl=Systemctl.user):
-        super().__init__(systemctl)
+    def __init__(self, systemctl=Systemctl.user, journalctl=Journalctl.user):
+        super().__init__(systemctl, journalctl)
 
     @staticmethod
     def su(user):
         systemctl = lambda *args: Systemd.su(user, Systemctl.user(*args))
-        return UserInstanceStatusTask(systemctl)
+        journalctl = lambda *args: Systemd.su(user, Journalctl.user(*args))
+        return UserInstanceStatusTask(systemctl, journalctl)
 
 
 class UserInstanceStatusTaskList(Task):

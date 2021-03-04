@@ -50,6 +50,11 @@ h1, .h1 {
             <pre class="pre-scrollable" id="timers_system"></pre>
           </div>
           <hr>
+          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_journal_system">+</button><a href="#collapse_journal_system" data-toggle="collapse"><code>journalctl --system -b --lines=20</code></a></p>
+          <div class="collapse" id="collapse_journal_system">
+            <pre class="pre-scrollable" id="journal_system"></pre>
+          </div>
+          <hr>
         </div>
       </div>
       <div id="users">
@@ -98,6 +103,9 @@ function set_system(data) {
     if ('timers' in data) {
         $('#timers_system').text(data['timers']);
     }
+    if ('journal' in data) {
+        $('#journal_system').text(data['journal']);
+    }
 }
 
 var users = [];
@@ -126,6 +134,11 @@ function add_user(name) {
       <pre class="pre-scrollable" id="timers_user_${name}"></pre>
     </div>
     <hr>
+    <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_journal_user_${name}">+</button><a href="#collapse_journal_user_${name}" data-toggle="collapse"><code>journalctl --user -b --lines=20</code></a></p>
+    <div class="collapse" id="collapse_journal_user_${name}">
+      <pre class="pre-scrollable" id="journal_user_${name}"></pre>
+    </div>
+    <hr>
   </div>
 </div>
 `;
@@ -143,6 +156,9 @@ function set_user(name, data) {
     }
     if ('timers' in data) {
         $('#timers_user_' + name).text(data['timers']);
+    }
+    if ('journal' in data) {
+        $('#journal_user_' + name).text(data['journal']);
     }
 }
 
