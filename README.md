@@ -1,6 +1,8 @@
 linux-status
 ============
 
+[![Test](https://github.com/egor-tensin/linux-status/actions/workflows/test.yml/badge.svg)](https://github.com/egor-tensin/linux-status/actions/workflows/test.yml)
+
 Simple Linux status web pages.
 
 Shows your `top`, systemd units & timers, allows you to reboot, etc.
