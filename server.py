@@ -54,7 +54,10 @@ def main(args=None):
     os.chdir(script_dir())
     args = parse_args(args)
     addr = ('', args.port)
-    httpd = http.server.ThreadingHTTPServer(addr, RequestHandler)
+    server = http.server.HTTPServer
+    if sys.version_info >= (3, 7):
+        server = http.server.ThreadingHTTPServer
+    httpd = server(addr, RequestHandler)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
