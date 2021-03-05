@@ -10,12 +10,17 @@
 
 import argparse
 import http.server
+import os
 import sys
 
 from app import Request
 
 
 DEFAULT_PORT = 18101
+
+
+def script_dir():
+    return os.path.dirname(os.path.realpath(__file__))
 
 
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
@@ -44,6 +49,9 @@ def parse_args(args=None):
 
 
 def main(args=None):
+    # It's a failsafe; this script is only allowed to serve the directory it
+    # resides in.
+    os.chdir(script_dir())
     args = parse_args(args)
     addr = ('', args.port)
     httpd = http.server.ThreadingHTTPServer(addr, RequestHandler)
