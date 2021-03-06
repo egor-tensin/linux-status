@@ -1,0 +1,14 @@
+Source: linux-status
+Section: admin
+Priority: optional
+Maintainer: Egor Tensin <Egor.Tensin@gmail.com>
+Build-Depends: debhelper-compat (= 12)
+Standards-Version: 4.4.1
+Homepage: https://github.com/egor-tensin/linux-status
+
+Package: linux-status
+Architecture: all
+Depends: python3, ${misc:Depends}
+Description: Simple Linux status web page
+ A simple web app to display your `top`, systemd units & timers, allow you to
+ reboot, etc.

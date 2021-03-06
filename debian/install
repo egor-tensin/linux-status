@@ -1,0 +1,12 @@
+LICENSE.txt usr/share/linux-status
+
+README.md usr/share/doc/linux-status
+img/example.png usr/share/doc/linux-status/img
+
+app.py srv/linux-status
+server.py srv/linux-status
+
+index.html srv/linux-status
+css/bootstrap.min.css srv/linux-status/css
+js/bootstrap.bundle.min.js srv/linux-status/js
+js/jquery-3.3.1.min.js srv/linux-status/js
