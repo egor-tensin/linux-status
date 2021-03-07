@@ -1,8 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-GIT_NAME = 'Egor Tensin'
-GIT_EMAIL = 'Egor.Tensin@gmail.com'
+NAME = 'Egor Tensin'
+EMAIL = 'Egor.Tensin@gmail.com'
 GPG_KEY = '3B3EF1235420917E0DB0723991D679FB92B036CB'
 UID = Process.euid
 
@@ -21,10 +21,18 @@ Vagrant.configure("2") do |config|
 
   # Working with the git repository:
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
-    git config --global user.name '#{GIT_NAME}'
-    git config --global user.email '#{GIT_EMAIL}'
+    git config --global user.name '#{NAME}'
+    git config --global user.email '#{EMAIL}'
   SHELL
   config.ssh.forward_agent = true
+
+  # Set DEB* environment variables:
+  config.vm.provision "shell", privileged: false, inline: <<-SHELL
+    tee -a ~/.bashrc <<'EOF'
+export DEBFULLNAME='#{NAME}'
+export DEBEMAIL='#{EMAIL}'
+EOF
+  SHELL
 
   # gpg-agent forwarding (https://wiki.gnupg.org/AgentForwarding):
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
