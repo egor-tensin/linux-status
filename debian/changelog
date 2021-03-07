@@ -1,3 +1,13 @@
+linux-status (0.0.1-2) unstable; urgency=medium
+
+  * debian: lower debhelper-compat level
+  * debian: add Vagrantfile for building packages
+  * debian: more one-liners in Makefile
+  * debian: set DEB* variables in Vagrantfile
+  * debian: add `make tag` command
+
+ -- Egor Tensin <Egor.Tensin@gmail.com>  Sun, 07 Mar 2021 23:02:18 +0000
+
 linux-status (0.0.1-1) unstable; urgency=medium
 
   * Initial release.
