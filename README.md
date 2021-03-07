@@ -7,12 +7,13 @@ Simple Linux status web page.
 
 Shows your `top`, systemd units & timers, allows you to reboot the server, etc.
 
-What it looks like
-------------------
+---
 
 ![Example page][example]
 
 [example]: img/example.png "Example page"
+
+---
 
 Installation
 ------------
