@@ -37,6 +37,10 @@ build_area := $(this_dir)/build-area
 .PHONY: DO
 DO:
 
+.PHONY: tag
+tag:
+	pushd '$(call escape,$(root))' && gbp buildpackage --git-tag-only
+
 .PHONY: src/test
 src/test:
 	pushd '$(call escape,$(root))' && gbp buildpackage --git-ignore-new -S -us -uc
