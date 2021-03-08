@@ -17,9 +17,9 @@ debian/build-area/.
       make bin
       make bin/test  # Ignores uncommmited changes.
 
-  * Add a changelog entry:
+  * Add a changelog entry (you'll need to fix it manually):
 
-      gbp dch
+      make dch
 
   * Tag the last commit:
 

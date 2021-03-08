@@ -37,6 +37,10 @@ build_area := $(this_dir)/build-area
 .PHONY: DO
 DO:
 
+.PHONY: dch
+dch:
+	gbp dch --distribution=unstable
+
 .PHONY: tag
 tag:
 	pushd '$(call escape,$(root))' && gbp buildpackage --git-tag-only
