@@ -23,7 +23,7 @@ endef
 PPA_OWNER ?= egor-tensin
 PPA_NAME  ?= linux-status
 GPG_KEY   ?= 3B3EF1235420917E0DB0723991D679FB92B036CB
-DIST      ?= focal
+DIST      ?= bionic
 
 $(eval $(call escape_arg,PPA_OWNER))
 $(eval $(call escape_arg,PPA_NAME))
@@ -77,12 +77,6 @@ dist:
 .PHONY: upload
 upload:
 	find '$(call escape,$(build_area))' -type f -name '*.changes' -exec dput 'ppa:$(call escape,$(PPA_OWNER))/$(call escape,$(PPA_NAME))/ubuntu/$(DIST)' {} ';'
-
-upload/%: DO
-	find '$(call escape,$(build_area))' -type f -name '*.changes' -exec dput 'ppa:$(call escape,$(PPA_OWNER))/$(call escape,$(PPA_NAME))/ubuntu/$*' {} ';'
-
-.PHONY: upload-all
-upload-all: upload/bionic upload/focal upload/groovy
 
 .PHONY: clean
 clean:
