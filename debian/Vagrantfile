@@ -21,14 +21,18 @@ Vagrant.configure("2") do |config|
 
   # Working with the git repository:
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
-    git config --global user.name '#{NAME}'
-    git config --global user.email '#{EMAIL}'
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+git config --global user.name '#{NAME}'
+git config --global user.email '#{EMAIL}'
   SHELL
   config.ssh.forward_agent = true
 
   # Set DEB* environment variables:
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
-    tee -a ~/.bashrc <<'EOF'
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+tee -a ~/.bashrc <<'EOF'
 export DEBFULLNAME='#{NAME}'
 export DEBEMAIL='#{EMAIL}'
 EOF
@@ -36,13 +40,17 @@ EOF
 
   # gpg-agent forwarding (https://wiki.gnupg.org/AgentForwarding):
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
-    gpg --keyserver hkp://keyserver.ubuntu.com/ --recv-keys '0x#{GPG_KEY}'
-    gpg --import-ownertrust <<'EOF'
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+gpg --keyserver hkp://keyserver.ubuntu.com/ --recv-keys '0x#{GPG_KEY}'
+gpg --import-ownertrust <<'EOF'
 #{GPG_KEY}:6:
 EOF
   SHELL
   config.vm.provision "shell", inline: <<-SHELL
-    echo 'StreamLocalBindUnlink yes' >> /etc/ssh/sshd_config
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+echo 'StreamLocalBindUnlink yes' >> /etc/ssh/sshd_config
   SHELL
   # "agent-extra-socket" on the host.
   local_gpg_socket = one_line(run('gpgconf', '--list-dirs', 'agent-extra-socket'))
@@ -52,8 +60,10 @@ EOF
 
   # Install the required packages:
   config.vm.provision "shell", inline: <<-SHELL
-    apt-get update
-    apt-get install -y build-essential devscripts dh-make git-buildpackage
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+apt-get update
+apt-get install -y build-essential devscripts dh-make git-buildpackage
   SHELL
 
   config.vm.provision :reload
