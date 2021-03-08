@@ -10,5 +10,5 @@ Package: linux-status
 Architecture: all
 Depends: python3, ${misc:Depends}
 Description: Simple Linux status web page
- A simple web app to display your `top`, systemd units & timers, allow you to
- reboot, etc.
+ Shows your `top`, systemd units & timers, allows you to reboot the server,
+ etc.
