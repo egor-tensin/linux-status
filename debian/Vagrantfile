@@ -62,8 +62,8 @@ echo 'StreamLocalBindUnlink yes' >> /etc/ssh/sshd_config
   config.vm.provision "shell", inline: <<-SHELL
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
-apt-get update
-apt-get install -y build-essential devscripts dh-make git-buildpackage
+apt-get update && apt-get install -y make
+cd /vagrant/debian && make deps
   SHELL
 
   config.vm.provision :reload

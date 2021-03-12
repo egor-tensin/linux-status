@@ -37,6 +37,11 @@ build_area := $(this_dir)/build-area
 .PHONY: DO
 DO:
 
+.PHONY: deps
+deps:
+	apt-get update
+	apt-get install -y build-essential devscripts dh-make git-buildpackage
+
 .PHONY: dch
 dch:
 	gbp dch --distribution=unstable
