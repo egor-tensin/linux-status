@@ -22,7 +22,7 @@ jobs:
         run: cd debian && sudo make deps
       - name: Create cowbuilder image
         run: cd debian && sudo make dist/create
-      - name: Test building binary package
+      - name: Build binary package
         run: cd debian && make dist
       - name: Build source package
         run: cd debian && make clean && make src
