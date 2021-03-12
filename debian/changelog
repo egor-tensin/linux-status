@@ -1,3 +1,10 @@
+linux-status (0.0.2-3) unstable; urgency=medium
+
+  * debian: gbp buildpackage --git-ignore-branch
+  * workflows: tweak step names
+
+ -- Egor Tensin <Egor.Tensin@gmail.com>  Fri, 12 Mar 2021 20:50:55 +0000
+
 linux-status (0.0.2-2) unstable; urgency=medium
 
   * debian: add GitHub workflow
