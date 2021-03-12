@@ -1,0 +1,30 @@
+name: Upload to PPA
+
+on:
+  push:
+    tags: 'debian/*'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Upload to PPA
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v3
+        with:
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Install dependencies
+        run: cd debian && sudo make deps
+      - name: Create cowbuilder image
+        run: cd debian && sudo make dist/create
+      - name: Test building binary package
+        run: cd debian && make dist
+      - name: Build source package
+        run: cd debian && make clean && make src
+      - name: Upload to PPA
+        run: cd debian && make upload
