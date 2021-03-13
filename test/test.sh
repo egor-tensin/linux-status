@@ -30,7 +30,7 @@ run_server() {
     "$script_dir/../server.py" --port 18101 &
     server_pid="$!"
     dump "Its PID is $server_pid"
-    sleep 3
+    sleep 5
 }
 
 kill_server() {
