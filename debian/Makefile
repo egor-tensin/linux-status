@@ -1,14 +1,18 @@
-MAKEFLAGS += --warn-undefined-variables
+MAKEFLAGS += --no-builtin-rules --no-builtin-variables --warn-undefined-variables
+unexport MAKEFLAGS
 .DEFAULT_GOAL := all
 .DELETE_ON_ERROR:
 .SUFFIXES:
 SHELL := bash
+# Careful -eu breaks things as usual.
 .SHELLFLAGS := -e -o pipefail -c
+
+.PHONY: DO
+DO:
 
 escape = $(subst ','\'',$(1))
 
-# Don't expand parameters:
-define escape_arg
+define noexpand
 ifeq ($$(origin $(1)),environment)
     $(1) := $$(value $(1))
 endif
@@ -25,17 +29,14 @@ PPA_NAME  ?= linux-status
 GPG_KEY   ?= 3B3EF1235420917E0DB0723991D679FB92B036CB
 DIST      ?= bionic
 
-$(eval $(call escape_arg,PPA_OWNER))
-$(eval $(call escape_arg,PPA_NAME))
-$(eval $(call escape_arg,GPG_KEY))
-$(eval $(call escape_arg,DIST))
+$(eval $(call noexpand,PPA_OWNER))
+$(eval $(call noexpand,PPA_NAME))
+$(eval $(call noexpand,GPG_KEY))
+$(eval $(call noexpand,DIST))
 
 this_dir   := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 root       := $(this_dir)/..
 build_area := $(this_dir)/build-area
-
-.PHONY: DO
-DO:
 
 .PHONY: deps
 deps:
