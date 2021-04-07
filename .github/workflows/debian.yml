@@ -23,3 +23,4 @@ jobs:
         with:
           name: build-area
           path: debian/build-area/
+          if-no-files-found: error
