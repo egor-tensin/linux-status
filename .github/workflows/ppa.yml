@@ -1,4 +1,4 @@
-name: Upload to PPA
+name: Publish (Launchpad)
 
 on:
   push:
@@ -16,8 +16,8 @@ jobs:
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v3
         with:
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
+          passphrase: '${{ secrets.GPG_PASSPHRASE }}'
       - name: Install dependencies
         run: cd debian && sudo make deps
       - name: Create cowbuilder image
