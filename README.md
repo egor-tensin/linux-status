@@ -2,6 +2,8 @@ linux-status
 ============
 
 [![Test](https://github.com/egor-tensin/linux-status/actions/workflows/test.yml/badge.svg)](https://github.com/egor-tensin/linux-status/actions/workflows/test.yml)
+[![Packages (Debian)](https://github.com/egor-tensin/linux-status/actions/workflows/debian.yml/badge.svg)](https://github.com/egor-tensin/linux-status/actions/workflows/debian.yml)
+[![Publish (Launchpad)](https://github.com/egor-tensin/linux-status/actions/workflows/ppa.yml/badge.svg)](https://github.com/egor-tensin/linux-status/actions/workflows/ppa.yml)
 
 Simple Linux status web page.
 
