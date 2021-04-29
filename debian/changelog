@@ -1,3 +1,10 @@
+linux-status (1.0-3) unstable; urgency=medium
+
+  * debian/Makefile: fix grammar
+  * debian: install whole directories
+
+ -- Egor Tensin <Egor.Tensin@gmail.com>  Thu, 29 Apr 2021 12:44:31 +0000
+
 linux-status (1.0-2) unstable; urgency=medium
 
   * debian: Makefile best practices
