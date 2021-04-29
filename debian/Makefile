@@ -4,7 +4,7 @@ unexport MAKEFLAGS
 .DELETE_ON_ERROR:
 .SUFFIXES:
 SHELL := bash
-# Careful -eu breaks things as usual.
+# Careful: nounset breaks things, as per usual.
 .SHELLFLAGS := -e -o pipefail -c
 
 .PHONY: DO
