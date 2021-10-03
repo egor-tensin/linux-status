@@ -7,6 +7,10 @@ then `vagrant ssh`.
 There're a bunch of useful one-liners in Makefile.  Everything is built in
 debian/build-area/.
 
+  * Merge the new version to the debian branch:
+
+      git merge TAG
+
   * Make a source package:
 
       make src
@@ -21,7 +25,7 @@ debian/build-area/.
 
       make dch
 
-  * Tag the last commit:
+  * Tag the last commit in the debian/VERSION format:
 
       make tag
 
