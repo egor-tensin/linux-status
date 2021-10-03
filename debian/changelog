@@ -1,3 +1,10 @@
+linux-status (1.1.0-1) unstable; urgency=medium
+
+  * fix whitespace
+  * top: run with -E/-e if supported
+
+ -- Egor Tensin <Egor.Tensin@gmail.com>  Sun, 03 Oct 2021 23:51:18 +0000
+
 linux-status (1.0.1-1) unstable; urgency=medium
 
   * README: badges for all workflows
