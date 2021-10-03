@@ -1,3 +1,16 @@
+linux-status (1.0.1-1) unstable; urgency=medium
+
+  * README: badges for all workflows
+  * workflows/test: linting
+  * workflows/test: test w/ latest Python
+  * workflows/test -> workflows/ci
+  * workflows/ci: rename to "CI"
+  * index.html: safer DOM generation using jQuery
+  * debian/Makefile: apt scripting best practices
+  * debian/README: update
+
+ -- Egor Tensin <Egor.Tensin@gmail.com>  Sun, 03 Oct 2021 15:54:26 +0000
+
 linux-status (1.0-3) unstable; urgency=medium
 
   * debian/Makefile: fix grammar
