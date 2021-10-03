@@ -111,39 +111,43 @@ function set_system(data) {
 
 var users = [];
 
+function create_user_block(name, lbl, cmd) {
+    let pre_id = `${lbl}_user_${name}`;
+    let collapse_id = `collapse_${pre_id}`;
+    let button_params = {
+        'class': 'btn btn-outline-primary btn-sm button-expand',
+        'data-toggle': 'collapse',
+        'data-target': '#' + collapse_id
+    };
+    let a_params = {
+        href: '#' + collapse_id,
+        'data-toggle': 'collapse'
+    };
+    return $('<div/>')
+        .append($('<p/>')
+	    .append($('<button/>', button_params).text('+'))
+            .append($('<a/>', a_params)
+                .append($('<code/>').text(cmd))))
+        .append($('<div/>', {'class': 'collapse', id: collapse_id})
+            .append($('<pre/>', {'class': 'pre-scrollable', id: pre_id})))
+        .append($('<hr/>'));
+}
+
 function add_user(name) {
     if (users.includes(name)) {
         return;
     }
-    let text = `
-<div class="row" id="user_${name}">
-  <div class="col">
-    <h2>${name}</h2>
-    <hr>
-    <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_failed_user_${name}">+</button><a href="#collapse_failed_user_${name}" data-toggle="collapse"><code>systemctl --user list-units --failed</code></a></p>
-    <div class="collapse show" id="collapse_failed_user_${name}">
-      <pre class="pre-scrollable" id="failed_user_${name}"></pre>
-    </div>
-    <hr>
-    <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_overview_user_${name}">+</button><a href="#collapse_overview_user_${name}" data-toggle="collapse"><code>systemctl --user status</code></a></p>
-    <div class="collapse" id="collapse_overview_user_${name}">
-      <pre class="pre-scrollable" id="overview_user_${name}"></pre>
-    </div>
-    <hr>
-    <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_timers_user_${name}">+</button><a href="#collapse_timers_user_${name}" data-toggle="collapse"><code>systemctl --user list-timers --all</code></a></p>
-    <div class="collapse" id="collapse_timers_user_${name}">
-      <pre class="pre-scrollable" id="timers_user_${name}"></pre>
-    </div>
-    <hr>
-    <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_journal_user_${name}">+</button><a href="#collapse_journal_user_${name}" data-toggle="collapse"><code>journalctl --user -b --lines=20</code></a></p>
-    <div class="collapse" id="collapse_journal_user_${name}">
-      <pre class="pre-scrollable" id="journal_user_${name}"></pre>
-    </div>
-    <hr>
-  </div>
-</div>
-`;
-    $('#users').append(text);
+    let container = $('<div/>', {'class': 'row', id: 'user_' + name})
+        .append($('<div/>', {'class': 'col'})
+            .append($('<h2/>').text(name))
+            .append($('<hr/>'))
+            .append(create_user_block(name, 'failed', 'systemctl --user list-units --failed'))
+            .append(create_user_block(name, 'overview', 'systemctl --user status'))
+            .append(create_user_block(name, 'timers', 'systemctl --user list-timers --all'))
+            .append(create_user_block(name, 'journal', 'journalctl --user -b --lines=20')));
+
+    $('#users').append(container);
+    $('#collapse_failed_user_' + name).addClass('show');
     users.push(name);
 }
 
