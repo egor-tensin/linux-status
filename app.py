@@ -207,14 +207,31 @@ class Task(abc.ABC):
 
 
 class TopTask(Task):
+    COMMAND = None
+
     def __init__(self):
-        self.cmd = Command('top', '-b', '-n', '1', '-w', '512')
+        self.cmd = TopTask.get_command()
 
     def run(self):
         self.task = self.cmd.run()
 
     def result(self):
         return self.task.result()
+
+    @staticmethod
+    def get_command():
+        # On more modern versions of top, we want to enable memory scaling
+        # from the command line (another option is the rc file, but that's too
+        # complicated).  For that, we simply run `top -h` once, and check if
+        # the output contains the flags we want to use.
+        if TopTask.COMMAND is not None:
+            return TopTask.COMMAND
+        help_output = run_do('top', '-h')
+        args = ['top', '-b', '-n', '1', '-w', '512']
+        if 'Ee' in help_output:
+            args += ['-E', 'm', '-e', 'm']
+        TopTask.COMMAND = Command(*args)
+        return TopTask.COMMAND
 
 
 class RebootTask(Task):
