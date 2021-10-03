@@ -125,7 +125,7 @@ function create_user_block(name, lbl, cmd) {
     };
     return $('<div/>')
         .append($('<p/>')
-	    .append($('<button/>', button_params).text('+'))
+            .append($('<button/>', button_params).text('+'))
             .append($('<a/>', a_params)
                 .append($('<code/>').text(cmd))))
         .append($('<div/>', {'class': 'collapse', id: collapse_id})
