@@ -41,7 +41,7 @@ build_area := $(this_dir)/build-area
 .PHONY: deps
 deps:
 	apt-get update
-	apt-get install -y build-essential devscripts dh-make git-buildpackage
+	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends build-essential cowbuilder devscripts dh-make dput git-buildpackage
 
 .PHONY: dch
 dch:
