@@ -118,6 +118,11 @@ class Response:
 
 def run_do(*args, **kwargs):
     output = subprocess.run(args, stdin=DEVNULL, stdout=PIPE, stderr=STDOUT, universal_newlines=True, **kwargs)
+    # Include the output in the exception's message:
+    try:
+        output.check_returncode()
+    except Exception as e:
+        raise RuntimeError("Command's output was this:\n" + output.stdout) from e
     return output.stdout
 
 
