@@ -394,7 +394,7 @@ def systemd_users():
         for line in lines:
             # This assumes user names cannot contain spaces.
             # loginctl list-users output must be in the UID NAME format.
-            info = line.split(' ', 2)
+            info = line.lstrip().split(' ', 2)
             if len(info) < 2:
                 raise RuntimeError(f'invalid `loginctl list-users` output:\n{output}')
             uid, user = info[0], info[1]
