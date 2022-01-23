@@ -70,18 +70,23 @@ def hostname():
 
 
 class Response:
-    def __init__(self, data):
-        self.data = data
+    DEFAULT_STATUS = http.server.HTTPStatus.OK
+
+    @staticmethod
+    def body_from_json(body):
+        return json.dumps(body, ensure_ascii=False, indent=4)
+
+    def __init__(self, body, status=None):
+        if status is None:
+            status = Response.DEFAULT_STATUS
+        self.status = status
+        self.body = body
 
     def headers(self):
         yield 'Content-Type', 'text/html; charset=utf-8'
 
-    @staticmethod
-    def dump_json(data):
-        return json.dumps(data, ensure_ascii=False, indent=4)
-
-    def body(self):
-        return self.dump_json(self.data)
+    def encode_body(self):
+        return self.body.encode(errors='replace')
 
     def write_as_cgi_script(self):
         self.write_headers_as_cgi_script()
@@ -93,22 +98,22 @@ class Response:
         print()
 
     def write_body_as_cgi_script(self):
-        if self.data is not None:
-            print(self.body())
+        if self.body is not None:
+            print(self.body)
 
-    def write_as_request_handler(self, handler):
-        handler.send_response(http.server.HTTPStatus.OK)
-        self.write_headers_as_request_handler(handler)
-        self.write_body_as_request_handler(handler)
+    def write_to_request_handler(self, handler):
+        handler.send_response(self.status)
+        self.write_headers_to_request_handler(handler)
+        self.write_body_to_request_handler(handler)
 
-    def write_headers_as_request_handler(self, handler):
+    def write_headers_to_request_handler(self, handler):
         for name, val in self.headers():
             handler.send_header(name, val)
         handler.end_headers()
 
-    def write_body_as_request_handler(self, handler):
-        if self.data is not None:
-            handler.wfile.write(self.body().encode(errors='replace'))
+    def write_body_to_request_handler(self, handler):
+        if self.body is not None:
+            handler.wfile.write(self.encode_body())
 
 
 def run_do(*args, **kwargs):
@@ -195,7 +200,7 @@ class Loginctl(Systemd):
 class Task(abc.ABC):
     def complete(self):
         self.run()
-        return Response(self.result())
+        return Response(Response.body_from_json(self.result()))
 
     @abc.abstractmethod
     def run(self):

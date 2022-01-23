@@ -12,8 +12,9 @@ import argparse
 import http.server
 import os
 import sys
+import traceback
 
-from app import Request
+from app import Request, Response
 
 
 DEFAULT_PORT = 18101
@@ -31,11 +32,12 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             return super().do_GET()
         try:
             response = request.process()
+            response.write_to_request_handler(self)
         except:
-            self.send_response(http.server.HTTPStatus.INTERNAL_SERVER_ERROR)
-            self.end_headers()
+            status = http.server.HTTPStatus.INTERNAL_SERVER_ERROR
+            response = Response(traceback.format_exc(), status)
+            response.write_to_request_handler(self)
             return
-        response.write_as_request_handler(self)
 
 
 def parse_args(args=None):
