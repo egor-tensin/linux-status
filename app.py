@@ -311,7 +311,10 @@ class UserInstanceStatusTaskList(Task):
             self.tasks = {user.name: UserInstanceStatusTask.su(user) for user in systemd_users()}
         else:
             # As a regular user, we can only query ourselves.
-            self.tasks = {get_current_user().name: UserInstanceStatusTask()}
+            self.tasks = {}
+            user = get_current_user()
+            if user_instance_active(user):
+                self.tasks[user.name] = UserInstanceStatusTask()
 
     def run(self):
         for task in self.tasks.values():
@@ -361,6 +364,19 @@ def get_current_user():
     uid = os.getuid()
     entry = pwd.getpwuid(uid)
     return User(entry.pw_uid, entry.pw_name)
+
+
+def user_instance_active(user):
+    # I'm pretty sure this is the way to determine if the user instance is
+    # running?
+    # Source: https://www.freedesktop.org/software/systemd/man/user@.service.html
+    unit_name = f'user@{user.uid}.service'
+    cmd = Systemctl.system('is-active', unit_name, '--quiet')
+    try:
+        cmd.run().result()
+        return True
+    except Exception:
+        return False
 
 
 # A pitiful attempt to find a list of possibly-systemd-enabled users follows
