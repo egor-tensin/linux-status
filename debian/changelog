@@ -1,3 +1,15 @@
+linux-status (1.2-1) unstable; urgency=medium
+
+  * app.py: fix loginctl output parsing
+  * dump exceptions to browser's console
+  * app.py: include command's output in the exception
+  * test/test.sh: print curl output on failure
+  * app.py: don't query user info if no users
+  * app.py: don't do systemctl --user if no user instance
+  * workflows/ci: run tests as root also
+
+ -- Egor Tensin <Egor.Tensin@gmail.com>  Mon, 24 Jan 2022 23:41:33 +0000
+
 linux-status (1.1.0-1) unstable; urgency=medium
 
   * fix whitespace
