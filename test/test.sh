@@ -73,11 +73,10 @@ run_curl() {
     local url="$1"
     curl \
         --silent --show-error \
-        --fail \
         --dump-header "$curl_header_file" \
         --output "$curl_output_file" \
         --connect-timeout 3 \
-        -- "http://localhost:$server_port$url"
+        -- "http://localhost:$server_port$url" || true
 }
 
 curl_check_status() {
@@ -95,6 +94,11 @@ curl_check_status() {
 
     dump "Actual HTTP response: $actual" >&2
     dump "Expected:             $expected" >&2
+
+    dump 'HTTP headers:' >&2
+    cat -- "$curl_header_file" >&2
+    dump 'HTTP response:' >&2
+    cat -- "$curl_output_file" >&2
     return 1
 }
 

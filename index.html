@@ -64,12 +64,21 @@ h1, .h1 {
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
     <script>
+function dump_fail(data) {
+    console.log('Response code was: ' + data.status + ' ' + data.statusText);
+    console.log('Response was:\n' + data.responseText);
+}
+
+function get(url, success_callback) {
+    $.get(url, success_callback).fail(dump_fail);
+}
+
 function reboot() {
-    $.get('reboot');
+    get('reboot');
 }
 
 function shutdown() {
-    $.get('poweroff');
+    get('poweroff');
 }
 
 function set_hostname(data) {
@@ -82,7 +91,7 @@ function set_top(data) {
 }
 
 function refresh_top() {
-    $.get('top', function(data) {
+    get('top', function(data) {
         set_top(JSON.parse(data));
     });
 }
@@ -183,7 +192,7 @@ function set_users(data) {
 }
 
 function refresh_status() {
-    $.get('status', function(data) {
+    get('status', function(data) {
         data = JSON.parse(data);
         set_hostname(data['hostname']);
         set_system(data['system']);
