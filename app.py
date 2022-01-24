@@ -411,9 +411,11 @@ def systemd_users():
             yield User(uid, user)
 
     def show_users(users):
+        user_args = [user.name for user in users]
+        if not user_args:
+            return None
         properties = 'UID', 'Name', 'RuntimePath'
         prop_args = (arg for prop in properties for arg in ('-p', prop))
-        user_args = (user.name for user in users)
         output = Loginctl('show-user', *prop_args, '--value', *user_args).run().result()
         lines = output.splitlines()
         # Assuming that for muptiple users, the properties will be separated by
