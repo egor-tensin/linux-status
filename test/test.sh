@@ -27,7 +27,7 @@ dump() {
 
 run_server() {
     dump "Starting up server..."
-    "$script_dir/../server.py" --port 18101 &
+    "$script_dir/../server.py" --port "$server_port" &
     server_pid="$!"
     dump "Its PID is $server_pid"
     sleep 5
