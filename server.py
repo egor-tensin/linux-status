@@ -40,6 +40,14 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             return
 
 
+def make_server(port):
+    addr = ('', port)
+    server = http.server.HTTPServer
+    if sys.version_info >= (3, 7):
+        server = http.server.ThreadingHTTPServer
+    return server(addr, RequestHandler)
+
+
 def parse_args(args=None):
     if args is None:
         args = sys.argv[1:]
@@ -54,12 +62,9 @@ def main(args=None):
     # It's a failsafe; this script is only allowed to serve the directory it
     # resides in.
     os.chdir(script_dir())
+
     args = parse_args(args)
-    addr = ('', args.port)
-    server = http.server.HTTPServer
-    if sys.version_info >= (3, 7):
-        server = http.server.ThreadingHTTPServer
-    httpd = server(addr, RequestHandler)
+    httpd = make_server(args.port)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
