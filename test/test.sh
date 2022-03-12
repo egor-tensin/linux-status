@@ -108,6 +108,9 @@ curl_check_keyword() {
         if ! grep --fixed-strings --quiet -- "$keyword" "$curl_output_file"; then
             dump "The following pattern hasn't been found:"
             dump "$keyword"
+            dump "The output was:"
+            cat -- "$curl_output_file"
+            return 1
         fi
     done
 }
