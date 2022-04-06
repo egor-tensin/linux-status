@@ -1,3 +1,10 @@
+linux-status (1.2-2) unstable; urgency=medium
+
+  * debian/README: rearrange items
+  * debian/Makefile: consistent prelude
+
+ -- Egor Tensin <Egor.Tensin@gmail.com>  Wed, 06 Apr 2022 08:35:56 +0000
+
 linux-status (1.2-1) unstable; urgency=medium
 
   * app.py: fix loginctl output parsing
