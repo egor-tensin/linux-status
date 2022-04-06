@@ -11,6 +11,10 @@ debian/build-area/.
 
       git merge TAG
 
+  * Add a changelog entry (you'll need to fix it manually):
+
+      make dch
+
   * Make a source package:
 
       make src
@@ -20,10 +24,6 @@ debian/build-area/.
 
       make bin
       make bin/test  # Ignores uncommmited changes.
-
-  * Add a changelog entry (you'll need to fix it manually):
-
-      make dch
 
   * Tag the last commit in the debian/VERSION format:
 
