@@ -4,11 +4,7 @@ unexport MAKEFLAGS
 .DELETE_ON_ERROR:
 .SUFFIXES:
 SHELL := bash
-# Careful: nounset breaks things, as per usual.
-.SHELLFLAGS := -e -o pipefail -c
-
-.PHONY: DO
-DO:
+.SHELLFLAGS := -eu -o pipefail -c
 
 escape = $(subst ','\'',$(1))
 
@@ -37,6 +33,9 @@ $(eval $(call noexpand,DIST))
 this_dir   := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 root       := $(this_dir)/..
 build_area := $(this_dir)/build-area
+
+.PHONY: DO
+DO:
 
 .PHONY: deps
 deps:
