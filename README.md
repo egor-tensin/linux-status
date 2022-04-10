@@ -34,12 +34,7 @@ Usage
 
 To manually start a web server on port 18101, run:
 
-    > python3 server.py
-
-TODO
-----
-
-* Show an error if a AJAX call fails.
+    > ./src/server.py
 
 License
 -------
