@@ -7,7 +7,8 @@ linux-status
 
 Simple Linux status web page.
 
-Shows your `top`, systemd units & timers, allows you to reboot the server, etc.
+Shows your `top`, Docker container status, systemd units & timers, allows you
+to reboot the server, etc.
 
 ---
 
