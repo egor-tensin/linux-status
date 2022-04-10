@@ -14,7 +14,7 @@ to reboot the server, etc.
 
 ![Example page][example]
 
-[example]: img/example.png "Example page"
+[example]: doc/example.png "Example page"
 
 ---
 
