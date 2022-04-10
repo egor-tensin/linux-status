@@ -140,6 +140,11 @@ class TaskList(Task):
     def __init__(self, tasks):
         self.tasks = tasks
 
+    def add(self, name, task):
+        if name in self.tasks:
+            raise RuntimeError(f'duplicate task name: {name}')
+        self.tasks[name] = task
+
     def run(self):
         for task in self.tasks.values():
             task.run()
@@ -231,6 +236,82 @@ class Loginctl(Systemd):
         super().__init__('loginctl', *args, '--full')
 
 
+class Docker(Command):
+    def __init__(self, *args):
+        super().__init__('docker', *args)
+
+
+class DockerVersion(Docker):
+    def __init__(self, *args):
+        super().__init__('version')
+
+    @staticmethod
+    def is_daemon_running():
+        try:
+            DockerVersion().now()
+            return True
+        except:
+            return False
+
+
+class DockerPs(Docker):
+    def __init__(self, *args):
+        super().__init__('ps', *args)
+
+    @staticmethod
+    def quiet(*args):
+        return DockerPs('--quiet', *args)
+
+    @staticmethod
+    def get_all_ids():
+        cmd = DockerPs.quiet('--all')
+        return cmd.now().splitlines()
+
+
+class DockerInspect(Docker):
+    # This is pretty cool.  I wanted to separate container entries with \0, and
+    # this is the best I could come up with.  Note that a newline still gets
+    # added at the end.
+    FORMAT = '{{printf "%s%c" (json .) 0}}'
+
+    def __init__(self, *args):
+        super().__init__('inspect', f'--format={DockerInspect.FORMAT}', *args)
+
+
+class DockerStatus(DockerInspect):
+    def __init__(self):
+        self.containers = DockerPs.get_all_ids()
+        super().__init__(*self.containers)
+
+    def run(self):
+        if not self.containers:
+            # `docker inspect` requires at least one container argument.
+            return ''
+        return super().run()
+
+    def result(self):
+        if not self.containers:
+            # `docker inspect` requires at least one container argument.
+            return []
+        result = super().result()
+        result = result.split('\0')
+        result = [json.loads(info) for info in result if info.strip()]
+        result = [DockerStatus.filter_info(info) for info in result]
+        return result
+
+    @staticmethod
+    def filter_info(info):
+        assert info['Name'][0] == '/'
+        return {
+            'exit_code': info['State']['ExitCode'],
+            'health': info['State'].get('Health', {}).get('Status', None),
+            'image': info['Config']['Image'],
+            # Strip the leading /:
+            'name': info['Name'][1:],
+            'started_at': info['State']['StartedAt'],
+            'status': info['State']['Status'],
+        }
+
 class Hostname(Task):
     def run(self):
         pass
@@ -285,6 +366,8 @@ class InstanceStatus(TaskList):
 class SystemStatus(InstanceStatus):
     def __init__(self):
         super().__init__(Systemctl.system, Journalctl.system)
+        if DockerVersion.is_daemon_running():
+            self.add('docker', DockerStatus())
 
 
 class UserStatus(InstanceStatus):
