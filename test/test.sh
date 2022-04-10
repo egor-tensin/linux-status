@@ -27,7 +27,7 @@ dump() {
 
 run_server() {
     dump "Starting up server..."
-    "$script_dir/../server.py" --port "$server_port" &
+    "$script_dir/../src/server.py" --port "$server_port" &
     server_pid="$!"
     dump "Its PID is $server_pid"
     sleep 5
@@ -172,7 +172,7 @@ run_cgi_test() {
     local query_string="what=$what"
     dump "Running CGI test for query string: $query_string"
 
-    QUERY_STRING="$query_string" "$script_dir/../app.py" > "$curl_output_file"
+    QUERY_STRING="$query_string" "$script_dir/../src/app.py" > "$curl_output_file"
 
     cgi_check_header
 
