@@ -12,6 +12,15 @@
 h1, .h1 {
     margin-top: 20px;
 }
+td > code {
+    color: inherit;
+}
+.mark-success {
+  color: #00d100;
+}
+.mark-failure {
+  color: red;
+}
     </style>
   </head>
   <body>
@@ -34,6 +43,11 @@ h1, .h1 {
           <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_top">+</button><a href="#collapse_top" data-toggle="collapse"><code>top</code></a> <span class="float-right"><small>refreshed every <span id="top_refresh_interval">-</span> seconds</small></span></p>
           <div class="collapse show" id="collapse_top">
             <pre class="pre-scrollable" id="top"></pre>
+          </div>
+          <hr>
+          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_docker">+</button><a href="#collapse_docker" data-toggle="collapse"><code>docker ps -a</code></a></p>
+          <div class="collapse" id="collapse_docker">
+            <div id="docker">No data has been loaded yet.</div>
           </div>
           <hr>
           <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_failed_system">+</button><a href="#collapse_failed_system" data-toggle="collapse"><code>systemctl --system list-units --failed</code></a></p>
@@ -64,6 +78,37 @@ h1, .h1 {
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
     <script>
+function format_duration(duration) {
+    let MSECS_IN_MIN = 60 * 1000;
+    let MSECS_IN_HOUR = 60 * MSECS_IN_MIN;
+    let MSECS_IN_DAY = 24 * MSECS_IN_HOUR;
+
+    let days = Math.floor(duration / MSECS_IN_DAY);
+    duration -= days * MSECS_IN_DAY;
+
+    let hours = Math.floor(duration / MSECS_IN_HOUR);
+    duration -= hours * MSECS_IN_HOUR;
+
+    let mins = Math.floor(duration / MSECS_IN_MIN);
+    duration -= mins * MSECS_IN_MIN;
+
+    if (days > 0) {
+        let result = `${days}d`;
+        if (days == 1 && hours > 0)
+            result += ` ${hours}h`;
+        return result;
+    }
+
+    if (hours > 0) {
+        let result = `${hours}h`;
+        if (hours == 1 && mins > 0)
+            result += ` ${mins}m`;
+        return result;
+    }
+
+    return ` ${mins}m`;
+}
+
 function dump_fail(data) {
     console.log('Response code was: ' + data.status + ' ' + data.statusText);
     console.log('Response was:\n' + data.responseText);
@@ -103,7 +148,99 @@ function loop_top() {
     $('#top_refresh_interval').text(top_refresh_interval_seconds);
 }
 
+function docker_container_is_ok(info) {
+    if (info.status == 'restarting' || info.status == 'dead')
+        return false;
+    if (info.status == 'exited' && info.exit_code != 0)
+        return false;
+    if (info.health == 'unhealthy')
+        return false;
+    return true;
+}
+
+function docker_container_format_status(info) {
+    let result = info.status;
+    result = result.charAt(0).toUpperCase() + result.slice(1);
+
+    if (info.status == 'exited' && info.exit_code != 0)
+        result += ` (${info.exit_code})`;
+
+    if (info.status == 'running') {
+        if (info.health == 'unhealthy') {
+            result = 'Up (unhealthy)';
+        } else {
+            let since = new Date(info.started_at);
+            result = `Up ${format_duration(Date.now() - since)}`;
+        }
+    }
+
+    return result;
+}
+
+function docker_fill_data(data) {
+    data.forEach(function(info) {
+        info.ok = docker_container_is_ok(info);
+        info.pretty_status = docker_container_format_status(info);
+    });
+}
+
+function make_docker_table_header() {
+    return $('<thead/>')
+        .append($('<tr/>')
+            .append($('<th/>'))
+            .append($('<th/>').text('Container'))
+            .append($('<th/>').text('Image'))
+            .append($('<th/>').text('Status')));
+}
+
+function make_docker_table_row(info) {
+    let success_mark = $('<span/>', {'class': 'mark-success'}).html('&#10004;');
+    let failure_mark = $('<span/>', {'class': 'mark-failure'}).html('&#10008;');
+    let success_class = 'table-light';
+    let failure_class = 'table-warning';
+
+    let mark = success_mark;
+    let _class = success_class;
+    if (!info.ok) {
+        mark = failure_mark;
+        _class = failure_class;
+    }
+
+    return $('<tr/>', {'class': _class})
+        .append($('<td/>').html(mark))
+        .append($('<td/>').append($('<code/>').text(info.name)))
+        .append($('<td/>').append($('<code/>').text(info.image)))
+        .append($('<td/>').text(info.pretty_status));
+}
+
+function make_docker_table(data) {
+    let body = $('<tbody/>');
+    data.forEach(function(info) {
+        body.append(make_docker_table_row(info));
+    });
+    let table = $('<div/>', {'class': 'table-responsive'})
+        .append($('<table/>', {'class': 'table table-hover table-sm text-nowrap'})
+            .append(make_docker_table_header())
+            .append(body));
+    return table;
+}
+
+function set_docker(data) {
+    docker_fill_data(data);
+
+    $('#docker').empty();
+    $('#docker').append(make_docker_table(data));
+
+    data.forEach(function(info) {
+        if (!info.ok)
+            $('#collapse_docker').addClass('show');
+    });
+}
+
 function set_system(data) {
+    if ('docker' in data) {
+        set_docker(data['docker']);
+    }
     if ('failed' in data) {
         $('#failed_system').text(data['failed']);
     }
