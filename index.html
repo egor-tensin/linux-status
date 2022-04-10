@@ -5,30 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>-</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <style>
-.button-expand {
-  margin-right: 1em;
-}
-h1, .h1 {
-  margin-top: 20px;
-}
-td > code {
-  color: inherit;
-}
-.mark-success {
-  color: #00d100;
-}
-.mark-failure {
-  color: red;
-}
-    </style>
   </head>
   <body>
     <div class="container">
-      <div class="row">
+      <div class="row mt-3">
         <div class="col">
           <h1 id="hostname">-</h1>
-          <p style="margin-bottom: 0;"><small>refreshed every <span id="status_refresh_interval">-</span> seconds</small></p>
+          <p class="mb-0"><small>refreshed every <span id="status_refresh_interval">-</span> seconds</small></p>
         </div>
         <div class="col h1 text-right">
           <div class="btn-group align-middle" role="group">
@@ -40,32 +23,32 @@ td > code {
       <div class="row">
         <div class="col">
           <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_top">+</button><a href="#collapse_top" data-toggle="collapse"><code>top</code></a> <span class="float-right"><small>refreshed every <span id="top_refresh_interval">-</span> seconds</small></span></p>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_top">+</button><a href="#collapse_top" data-toggle="collapse"><code>top</code></a> <span class="float-right"><small>refreshed every <span id="top_refresh_interval">-</span> seconds</small></span></p>
           <div class="collapse show" id="collapse_top">
             <pre class="pre-scrollable" id="top"></pre>
           </div>
           <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_docker">+</button><a href="#collapse_docker" data-toggle="collapse"><code>docker ps -a</code></a></p>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_docker">+</button><a href="#collapse_docker" data-toggle="collapse"><code>docker ps -a</code></a></p>
           <div class="collapse" id="collapse_docker">
             <div id="docker">No data has been loaded yet.</div>
           </div>
           <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_failed_system">+</button><a href="#collapse_failed_system" data-toggle="collapse"><code>systemctl --system list-units --failed</code></a></p>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_failed_system">+</button><a href="#collapse_failed_system" data-toggle="collapse"><code>systemctl --system list-units --failed</code></a></p>
           <div class="collapse show" id="collapse_failed_system">
             <pre class="pre-scrollable" id="failed_system"></pre>
           </div>
           <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_overview_system">+</button><a href="#collapse_overview_system" data-toggle="collapse"><code>systemctl --system status</code></a></p>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_overview_system">+</button><a href="#collapse_overview_system" data-toggle="collapse"><code>systemctl --system status</code></a></p>
           <div class="collapse" id="collapse_overview_system">
             <pre class="pre-scrollable" id="overview_system"></pre>
           </div>
           <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_timers_system">+</button><a href="#collapse_timers_system" data-toggle="collapse"><code>systemctl --system list-timers --all</code></a></p>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_timers_system">+</button><a href="#collapse_timers_system" data-toggle="collapse"><code>systemctl --system list-timers --all</code></a></p>
           <div class="collapse" id="collapse_timers_system">
             <pre class="pre-scrollable" id="timers_system"></pre>
           </div>
           <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm button-expand" data-toggle="collapse" data-target="#collapse_journal_system">+</button><a href="#collapse_journal_system" data-toggle="collapse"><code>journalctl --system -b --lines=20</code></a></p>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_journal_system">+</button><a href="#collapse_journal_system" data-toggle="collapse"><code>journalctl --system -b --lines=20</code></a></p>
           <div class="collapse" id="collapse_journal_system">
             <pre class="pre-scrollable" id="journal_system"></pre>
           </div>
@@ -194,8 +177,8 @@ function make_docker_table_header() {
 }
 
 function make_docker_table_row(info) {
-    let success_mark = $('<span/>', {'class': 'mark-success'}).html('&#10004;');
-    let failure_mark = $('<span/>', {'class': 'mark-failure'}).html('&#10008;');
+    let success_mark = $('<span/>', {'class': 'text-success'}).html('&#10004;');
+    let failure_mark = $('<span/>', {'class': 'text-danger'}).html('&#10008;');
     let success_class = 'table-light';
     let failure_class = 'table-warning';
 
@@ -208,8 +191,8 @@ function make_docker_table_row(info) {
 
     return $('<tr/>', {'class': _class})
         .append($('<td/>').html(mark))
-        .append($('<td/>').append($('<code/>').text(info.name)))
-        .append($('<td/>').append($('<code/>').text(info.image)))
+        .append($('<td/>').append($('<code/>', {'class': 'text-reset'}).text(info.name)))
+        .append($('<td/>').append($('<code/>', {'class': 'text-reset'}).text(info.image)))
         .append($('<td/>').text(info.pretty_status));
 }
 
@@ -261,7 +244,7 @@ function create_user_block(name, lbl, cmd) {
     let pre_id = `${lbl}_user_${name}`;
     let collapse_id = `collapse_${pre_id}`;
     let button_params = {
-        'class': 'btn btn-outline-primary btn-sm button-expand',
+        'class': 'btn btn-outline-primary btn-sm mr-3',
         'data-toggle': 'collapse',
         'data-target': '#' + collapse_id
     };
