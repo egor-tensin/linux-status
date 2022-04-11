@@ -9,6 +9,7 @@
 # custom URLs.  See that file for the reasons behind this.
 
 import argparse
+from http import HTTPStatus
 import http.server
 import os
 import sys
@@ -29,16 +30,19 @@ def default_html_dir():
 
 
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
+    ARGS = None
+
     def do_GET(self):
         try:
             request = Request.from_http_path(self.path)
+            request.disable_power = RequestHandler.ARGS.disable_power
         except ValueError:
             return super().do_GET()
         try:
             response = request.process()
             response.write_to_request_handler(self)
         except:
-            status = http.server.HTTPStatus.INTERNAL_SERVER_ERROR
+            status = HTTPStatus.INTERNAL_SERVER_ERROR
             response = Response(traceback.format_exc(), status)
             response.write_to_request_handler(self)
             return
@@ -59,6 +63,8 @@ def parse_args(args=None):
     parser.add_argument('-p', '--port', metavar='PORT',
                         type=int, default=DEFAULT_PORT,
                         help='set port number')
+    parser.add_argument('-n', '--disable-power', action='store_true',
+                        help='disable reboot/poweroff requests')
     parser.add_argument('-d', '--dir', metavar='DIR',
                         default=default_html_dir(),
                         help='HTML directory path')
@@ -67,6 +73,7 @@ def parse_args(args=None):
 
 def main(args=None):
     args = parse_args(args)
+    RequestHandler.ARGS = args
 
     # It's a failsafe; the script is not allowed to serve a random current
     # working directory.
