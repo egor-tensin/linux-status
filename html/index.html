@@ -25,34 +25,34 @@
       <div class="row">
         <div class="col">
           <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_top">+</button><a href="#collapse_top" data-toggle="collapse"><code>top</code></a> <span class="float-right"><small>refreshed every <span id="top_refresh_interval">-</span> seconds</small></span></p>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-2" data-toggle="collapse" data-target="#collapse_top">+</button><a href="#collapse_top" data-toggle="collapse"><code>top</code></a> <span class="float-right"><small>refreshed every <span id="top_refresh_interval">-</span> seconds</small></span></p>
           <div class="collapse show" id="collapse_top">
             <pre class="pre-scrollable" id="top">Data not loaded.</pre>
           </div>
           <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_docker">+</button><a href="#collapse_docker" data-toggle="collapse"><code>docker ps -a</code></a></p>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-2" data-toggle="collapse" data-target="#collapse_docker">+</button><a href="#collapse_docker" data-toggle="collapse"><code>docker ps -a</code></a></p>
           <div class="collapse" id="collapse_docker">
             <div id="docker">
               <pre class="pre-scrollable">Data not loaded.</pre>
             </div>
           </div>
           <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_failed_system">+</button><a href="#collapse_failed_system" data-toggle="collapse"><code>systemctl --system list-units --failed</code></a></p>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-2" data-toggle="collapse" data-target="#collapse_failed_system">+</button><a href="#collapse_failed_system" data-toggle="collapse"><code>systemctl --system list-units --failed</code></a></p>
           <div class="collapse show" id="collapse_failed_system">
             <pre class="pre-scrollable" id="failed_system">Data not loaded.</pre>
           </div>
           <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_overview_system">+</button><a href="#collapse_overview_system" data-toggle="collapse"><code>systemctl --system status</code></a></p>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-2" data-toggle="collapse" data-target="#collapse_overview_system">+</button><a href="#collapse_overview_system" data-toggle="collapse"><code>systemctl --system status</code></a></p>
           <div class="collapse" id="collapse_overview_system">
             <pre class="pre-scrollable" id="overview_system">Data not loaded.</pre>
           </div>
           <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_timers_system">+</button><a href="#collapse_timers_system" data-toggle="collapse"><code>systemctl --system list-timers --all</code></a></p>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-2" data-toggle="collapse" data-target="#collapse_timers_system">+</button><a href="#collapse_timers_system" data-toggle="collapse"><code>systemctl --system list-timers --all</code></a></p>
           <div class="collapse" id="collapse_timers_system">
             <pre class="pre-scrollable" id="timers_system">Data not loaded.</pre>
           </div>
           <hr>
-          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_journal_system">+</button><a href="#collapse_journal_system" data-toggle="collapse"><code>journalctl --system -b --lines=20</code></a></p>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-2" data-toggle="collapse" data-target="#collapse_journal_system">+</button><a href="#collapse_journal_system" data-toggle="collapse"><code>journalctl --system -b --lines=20</code></a></p>
           <div class="collapse" id="collapse_journal_system">
             <pre class="pre-scrollable" id="journal_system">Data not loaded.</pre>
           </div>
@@ -286,7 +286,7 @@ function create_user_block(name, lbl, cmd) {
     let pre_id = `${lbl}_user_${name}`;
     let collapse_id = `collapse_${pre_id}`;
     let button_params = {
-        'class': 'btn btn-outline-primary btn-sm mr-3',
+        'class': 'btn btn-outline-primary btn-sm mr-2',
         'data-toggle': 'collapse',
         'data-target': '#' + collapse_id
     };
