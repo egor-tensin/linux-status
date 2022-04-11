@@ -10,13 +10,15 @@
     <div class="container">
       <div class="row mt-3">
         <div class="col">
-          <h1 id="hostname">-</h1>
-          <p class="mb-0"><small>refreshed every <span id="status_refresh_interval">-</span> seconds</small></p>
-        </div>
-        <div class="col h1 text-right">
-          <div class="btn-group align-middle" role="group">
-            <a role="button" class="btn btn-sm btn-warning" href="#" onclick="reboot();">Reboot</a>
-            <a role="button" class="btn btn-sm btn-danger" href="#" onclick="shutdown();">Shutdown</a>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: .5em;">
+            <div>
+              <h1 id="hostname">-</h1>
+              <p class="mb-0 small">refreshed every <span id="status_refresh_interval">-</span> seconds</p>
+            </div>
+            <div class="btn-group" role="group" id="power_buttons">
+              <a role="button" class="btn btn-sm btn-warning" href="#" onclick="reboot();">Reboot</a>
+              <a role="button" class="btn btn-sm btn-danger" href="#" onclick="shutdown();">Shutdown</a>
+            </div>
           </div>
         </div>
       </div>
@@ -342,6 +344,18 @@ function main() {
 $(function() {
     main();
 });
+
+function on_resize(width) {
+    if (width < 576) { // xs, in Bootstrap's terms
+        $('#power_buttons').attr('class', 'btn-group-vertical');
+    } else {
+        $('#power_buttons').attr('class', 'btn-group');
+    }
+}
+
+$(window).bind('resize', function() {
+    on_resize($(this).width());
+}).trigger('resize');
     </script>
   </body>
 </html>
