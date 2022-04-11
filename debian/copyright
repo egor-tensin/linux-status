@@ -4,18 +4,18 @@ Upstream-Contact: Egor Tensin <Egor.Tensin@gmail.com>
 Source: https://github.com/egor-tensin/linux-status
 
 Files: *
-Copyright: 2018-2021 Egor Tensin <Egor.Tensin@gmail.com>
+Copyright: 2018-2022 Egor Tensin <Egor.Tensin@gmail.com>
 License: MIT
 
 Files: debian/*
-Copyright: 2021 Egor Tensin <Egor.Tensin@gmail.com>
+Copyright: 2021-2022 Egor Tensin <Egor.Tensin@gmail.com>
 License: MIT
 
-Files: css/bootstrap.min.css js/bootstrap.bundle.min.js
-Copyright: 2011-2018 The Bootstrap Authors
+Files: html/css/bootstrap.min.css html/js/bootstrap.bundle.min.js
+Copyright: 2011-2021 The Bootstrap Authors
 License: MIT
 
-Files: js/jquery-3.3.1.min.js
+Files: html/js/jquery.min.js
 Copyright: JS Foundation and other contributors
 License: MIT
 
