@@ -1,11 +1,7 @@
 LICENSE.txt usr/share/linux-status
 
 README.md usr/share/doc/linux-status
-img usr/share/doc/linux-status
+doc usr/share/doc/linux-status
 
-app.py srv/linux-status
-server.py srv/linux-status
-
-index.html srv/linux-status
-css srv/linux-status
-js srv/linux-status
+src/*.py srv/linux-status
+html srv/linux-status
