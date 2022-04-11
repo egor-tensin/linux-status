@@ -44,6 +44,7 @@ import cgi
 from collections import namedtuple
 from concurrent.futures import ThreadPoolExecutor
 from enum import Enum
+from http import HTTPStatus
 import http.server
 import json
 import os
@@ -66,7 +67,7 @@ def split_by(xs, sep):
 
 
 class Response:
-    DEFAULT_STATUS = http.server.HTTPStatus.OK
+    DEFAULT_STATUS = HTTPStatus.OK
 
     @staticmethod
     def body_from_json(body):

@@ -9,6 +9,7 @@
 # custom URLs.  See that file for the reasons behind this.
 
 import argparse
+from http import HTTPStatus
 import http.server
 import os
 import sys
@@ -38,7 +39,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             response = request.process()
             response.write_to_request_handler(self)
         except:
-            status = http.server.HTTPStatus.INTERNAL_SERVER_ERROR
+            status = HTTPStatus.INTERNAL_SERVER_ERROR
             response = Response(traceback.format_exc(), status)
             response.write_to_request_handler(self)
             return
