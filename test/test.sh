@@ -147,7 +147,7 @@ run_curl_tests() {
 }
 
 cgi_check_header() {
-    local expected='Content-Type: text/html; charset=utf-8'
+    local expected='200 OK'
     local actual
     actual="$( head -n 1 -- "$curl_output_file" )"
 

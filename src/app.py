@@ -90,6 +90,7 @@ class Response:
         self.write_body_as_cgi_script()
 
     def write_headers_as_cgi_script(self):
+        print(f'{self.status.value} {self.status.phrase}')
         for name, val in self.headers():
             print(f'{name}: {val}')
         print()
