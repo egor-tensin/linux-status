@@ -10,14 +10,6 @@ Simple Linux server monitoring.
 Shows your `top`, Docker container status, systemd units & timers, allows you
 to reboot the server, etc.
 
----
-
-![Example page][example]
-
-[example]: doc/example.png "Example page"
-
----
-
 Installation
 ------------
 
@@ -35,6 +27,13 @@ Usage
 To manually start a web server on port 18101, run:
 
     > ./src/server.py
+
+Screenshot
+----------
+
+![Example page][example]
+
+[example]: doc/example.png "Example page"
 
 License
 -------
