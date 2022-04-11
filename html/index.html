@@ -211,7 +211,7 @@ function make_docker_table(data) {
         body.append(make_docker_table_row(info));
     });
     let table = $('<div/>', {'class': 'table-responsive'})
-        .append($('<table/>', {'class': 'table table-hover table-sm text-nowrap'})
+        .append($('<table/>', {'class': 'table table-hover table-sm text-nowrap mb-0'})
             .append(make_docker_table_header())
             .append(body));
     return table;
