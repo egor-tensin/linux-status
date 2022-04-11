@@ -1,3 +1,30 @@
+linux-status (2.0-1) unstable; urgency=medium
+
+  * server.py: minor refactoring
+  * test/test.sh: use the port variable
+  * test: catch possible undetected failures
+  * app.py: refactoring
+  * app.py: add Docker container status
+  * index.html: add Docker status section
+  * README: update
+  * upgrade Bootstrap & jQuery
+  * index.html: two-space CSS indent
+  * index.html: use Bootstrap utilities
+  * put things into proper directories
+  * test: fix paths
+  * README: update
+  * index.html: display placeholders if no data
+  * index.html: use flexbox for header
+  * index.html: add a footer
+  * README: update
+  * index.html: get rid of extra whitespace
+  * README: update
+  * debian: update package description
+  * debian: update copyrights
+  * debian: fix paths
+
+ -- Egor Tensin <Egor.Tensin@gmail.com>  Mon, 11 Apr 2022 01:57:09 +0000
+
 linux-status (1.2-2) unstable; urgency=medium
 
   * debian/README: rearrange items
