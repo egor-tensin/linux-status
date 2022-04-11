@@ -1,0 +1,366 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>-</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+  </head>
+  <body class="d-flex flex-column h-100">
+    <div class="container flex-shrink-0">
+      <div class="row mt-3">
+        <div class="col">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: .5em;">
+            <div>
+              <h1 id="hostname">-</h1>
+              <p class="mb-0 small">refreshed every <span id="status_refresh_interval">-</span> seconds</p>
+            </div>
+            <div class="btn-group" role="group" id="power_buttons">
+              <a role="button" class="btn btn-sm btn-warning" href="#" onclick="reboot();">Reboot</a>
+              <a role="button" class="btn btn-sm btn-danger" href="#" onclick="shutdown();">Shutdown</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <hr>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_top">+</button><a href="#collapse_top" data-toggle="collapse"><code>top</code></a> <span class="float-right"><small>refreshed every <span id="top_refresh_interval">-</span> seconds</small></span></p>
+          <div class="collapse show" id="collapse_top">
+            <pre class="pre-scrollable" id="top">Data not loaded.</pre>
+          </div>
+          <hr>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_docker">+</button><a href="#collapse_docker" data-toggle="collapse"><code>docker ps -a</code></a></p>
+          <div class="collapse" id="collapse_docker">
+            <div id="docker">
+              <pre class="pre-scrollable">Data not loaded.</pre>
+            </div>
+          </div>
+          <hr>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_failed_system">+</button><a href="#collapse_failed_system" data-toggle="collapse"><code>systemctl --system list-units --failed</code></a></p>
+          <div class="collapse show" id="collapse_failed_system">
+            <pre class="pre-scrollable" id="failed_system">Data not loaded.</pre>
+          </div>
+          <hr>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_overview_system">+</button><a href="#collapse_overview_system" data-toggle="collapse"><code>systemctl --system status</code></a></p>
+          <div class="collapse" id="collapse_overview_system">
+            <pre class="pre-scrollable" id="overview_system">Data not loaded.</pre>
+          </div>
+          <hr>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_timers_system">+</button><a href="#collapse_timers_system" data-toggle="collapse"><code>systemctl --system list-timers --all</code></a></p>
+          <div class="collapse" id="collapse_timers_system">
+            <pre class="pre-scrollable" id="timers_system">Data not loaded.</pre>
+          </div>
+          <hr>
+          <p><button type="button" class="btn btn-outline-primary btn-sm mr-3" data-toggle="collapse" data-target="#collapse_journal_system">+</button><a href="#collapse_journal_system" data-toggle="collapse"><code>journalctl --system -b --lines=20</code></a></p>
+          <div class="collapse" id="collapse_journal_system">
+            <pre class="pre-scrollable" id="journal_system">Data not loaded.</pre>
+          </div>
+          <hr>
+        </div>
+      </div>
+      <div id="users">
+      </div>
+    </div>
+    <footer class="mt-auto py-3 border-top bg-light text-center text-muted small">
+      <div class="container">
+        <a href="https://github.com/egor-tensin/linux-status">linux-status</a> &mdash; simple Linux server monitoring by <a href="mailto:Egor.Tensin@gmail.com">Egor&nbsp;Tensin</a>
+      </div>
+    </footer>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script>
+function format_duration(duration) {
+    let MSECS_IN_MIN = 60 * 1000;
+    let MSECS_IN_HOUR = 60 * MSECS_IN_MIN;
+    let MSECS_IN_DAY = 24 * MSECS_IN_HOUR;
+
+    let days = Math.floor(duration / MSECS_IN_DAY);
+    duration -= days * MSECS_IN_DAY;
+
+    let hours = Math.floor(duration / MSECS_IN_HOUR);
+    duration -= hours * MSECS_IN_HOUR;
+
+    let mins = Math.floor(duration / MSECS_IN_MIN);
+    duration -= mins * MSECS_IN_MIN;
+
+    if (days > 0) {
+        let result = `${days}d`;
+        if (days == 1 && hours > 0)
+            result += ` ${hours}h`;
+        return result;
+    }
+
+    if (hours > 0) {
+        let result = `${hours}h`;
+        if (hours == 1 && mins > 0)
+            result += ` ${mins}m`;
+        return result;
+    }
+
+    return ` ${mins}m`;
+}
+
+function dump_fail(data) {
+    console.log('Response code was: ' + data.status + ' ' + data.statusText);
+    console.log('Response was:\n' + data.responseText);
+}
+
+function get(url, success_callback) {
+    $.get(url, success_callback).fail(dump_fail);
+}
+
+function reboot() {
+    get('reboot');
+}
+
+function shutdown() {
+    get('poweroff');
+}
+
+function set_hostname(data) {
+    $('#hostname').text(data);
+    $('title').text(data);
+}
+
+function set_top(data) {
+    $('#top').text(data);
+}
+
+function refresh_top() {
+    get('top', function(data) {
+        set_top(JSON.parse(data));
+    });
+}
+
+var top_refresh_interval_seconds = 5;
+
+function loop_top() {
+    setInterval(function() { refresh_top(); }, top_refresh_interval_seconds * 1000);
+    $('#top_refresh_interval').text(top_refresh_interval_seconds);
+}
+
+function docker_container_is_ok(info) {
+    if (info.status == 'restarting' || info.status == 'dead')
+        return false;
+    if (info.status == 'exited' && info.exit_code != 0)
+        return false;
+    if (info.health == 'unhealthy')
+        return false;
+    return true;
+}
+
+function docker_container_format_status(info) {
+    let result = info.status;
+    result = result.charAt(0).toUpperCase() + result.slice(1);
+
+    if (info.status == 'exited' && info.exit_code != 0)
+        result += ` (${info.exit_code})`;
+
+    if (info.status == 'running') {
+        if (info.health == 'unhealthy') {
+            result = 'Up (unhealthy)';
+        } else {
+            let since = new Date(info.started_at);
+            result = `Up ${format_duration(Date.now() - since)}`;
+        }
+    }
+
+    return result;
+}
+
+function docker_fill_data(data) {
+    data.forEach(function(info) {
+        info.ok = docker_container_is_ok(info);
+        info.pretty_status = docker_container_format_status(info);
+    });
+}
+
+function make_docker_table_header() {
+    return $('<thead/>')
+        .append($('<tr/>')
+            .append($('<th/>'))
+            .append($('<th/>').text('Container'))
+            .append($('<th/>').text('Image'))
+            .append($('<th/>').text('Status')));
+}
+
+function make_docker_table_row(info) {
+    let success_mark = $('<span/>', {'class': 'text-success'}).html('&#10004;');
+    let failure_mark = $('<span/>', {'class': 'text-danger'}).html('&#10008;');
+    let success_class = 'table-light';
+    let failure_class = 'table-warning';
+
+    let mark = success_mark;
+    let _class = success_class;
+    if (!info.ok) {
+        mark = failure_mark;
+        _class = failure_class;
+    }
+
+    return $('<tr/>', {'class': _class})
+        .append($('<td/>').html(mark))
+        .append($('<td/>').append($('<code/>', {'class': 'text-reset'}).text(info.name)))
+        .append($('<td/>').append($('<code/>', {'class': 'text-reset'}).text(info.image)))
+        .append($('<td/>').text(info.pretty_status));
+}
+
+function make_docker_table(data) {
+    let body = $('<tbody/>');
+    data.forEach(function(info) {
+        body.append(make_docker_table_row(info));
+    });
+    let table = $('<div/>', {'class': 'table-responsive'})
+        .append($('<table/>', {'class': 'table table-hover table-sm text-nowrap mb-0'})
+            .append(make_docker_table_header())
+            .append(body));
+    return table;
+}
+
+function set_docker(data) {
+    docker_fill_data(data);
+
+    $('#docker').empty();
+    $('#docker').append(make_docker_table(data));
+
+    data.forEach(function(info) {
+        if (!info.ok)
+            $('#collapse_docker').addClass('show');
+    });
+}
+
+function set_system(data) {
+    if ('docker' in data) {
+        set_docker(data['docker']);
+    }
+    if ('failed' in data) {
+        $('#failed_system').text(data['failed']);
+    }
+    if ('overview' in data) {
+        $('#overview_system').text(data['overview']);
+    }
+    if ('timers' in data) {
+        $('#timers_system').text(data['timers']);
+    }
+    if ('journal' in data) {
+        $('#journal_system').text(data['journal']);
+    }
+}
+
+var users = [];
+
+function create_user_block(name, lbl, cmd) {
+    let pre_id = `${lbl}_user_${name}`;
+    let collapse_id = `collapse_${pre_id}`;
+    let button_params = {
+        'class': 'btn btn-outline-primary btn-sm mr-3',
+        'data-toggle': 'collapse',
+        'data-target': '#' + collapse_id
+    };
+    let a_params = {
+        href: '#' + collapse_id,
+        'data-toggle': 'collapse'
+    };
+    return $('<div/>')
+        .append($('<p/>')
+            .append($('<button/>', button_params).text('+'))
+            .append($('<a/>', a_params)
+                .append($('<code/>').text(cmd))))
+        .append($('<div/>', {'class': 'collapse', id: collapse_id})
+            .append($('<pre/>', {'class': 'pre-scrollable', id: pre_id})
+                .text('Data not loaded.')))
+        .append($('<hr/>'));
+}
+
+function add_user(name) {
+    if (users.includes(name)) {
+        return;
+    }
+    let container = $('<div/>', {'class': 'row', id: 'user_' + name})
+        .append($('<div/>', {'class': 'col'})
+            .append($('<h2/>').text(name))
+            .append($('<hr/>'))
+            .append(create_user_block(name, 'failed', 'systemctl --user list-units --failed'))
+            .append(create_user_block(name, 'overview', 'systemctl --user status'))
+            .append(create_user_block(name, 'timers', 'systemctl --user list-timers --all'))
+            .append(create_user_block(name, 'journal', 'journalctl --user -b --lines=20')));
+
+    $('#users').append(container);
+    $('#collapse_failed_user_' + name).addClass('show');
+    users.push(name);
+}
+
+function set_user(name, data) {
+    add_user(name);
+    if ('failed' in data) {
+        $('#failed_user_' + name).text(data['failed']);
+    }
+    if ('overview' in data) {
+        $('#overview_user_' + name).text(data['overview']);
+    }
+    if ('timers' in data) {
+        $('#timers_user_' + name).text(data['timers']);
+    }
+    if ('journal' in data) {
+        $('#journal_user_' + name).text(data['journal']);
+    }
+}
+
+function set_users(data) {
+    users.forEach(function(name) {
+        if (!(name in data)) {
+            $('#user_' + name).remove();
+            let i = users.indexOf(name);
+            if (i > -1) {
+                users.splice(i, 1);
+            }
+        }
+    });
+    Object.keys(data).forEach(function(name) {
+        set_user(name, data[name]);
+    });
+}
+
+function refresh_status() {
+    get('status', function(data) {
+        data = JSON.parse(data);
+        set_hostname(data['hostname']);
+        set_system(data['system']);
+        set_users(data['user']);
+    });
+}
+
+var status_refresh_interval_seconds = 30;
+
+function loop_status() {
+    setInterval(function() {
+        refresh_status();
+    }, status_refresh_interval_seconds * 1000);
+    $('#status_refresh_interval').text(status_refresh_interval_seconds);
+}
+
+function main() {
+    refresh_top();
+    refresh_status();
+    loop_top();
+    loop_status();
+}
+
+$(function() {
+    main();
+});
+
+function on_resize(width) {
+    if (width < 576) { // xs, in Bootstrap's terms
+        $('#power_buttons').attr('class', 'btn-group-vertical');
+    } else {
+        $('#power_buttons').attr('class', 'btn-group');
+    }
+}
+
+$(window).bind('resize', function() {
+    on_resize($(this).width());
+}).trigger('resize');
+    </script>
+  </body>
+</html>

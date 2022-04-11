@@ -27,7 +27,7 @@ dump() {
 
 run_server() {
     dump "Starting up server..."
-    "$script_dir/../server.py" --port 18101 &
+    "$script_dir/../src/server.py" --port "$server_port" &
     server_pid="$!"
     dump "Its PID is $server_pid"
     sleep 5
@@ -108,6 +108,9 @@ curl_check_keyword() {
         if ! grep --fixed-strings --quiet -- "$keyword" "$curl_output_file"; then
             dump "The following pattern hasn't been found:"
             dump "$keyword"
+            dump "The output was:"
+            cat -- "$curl_output_file"
+            return 1
         fi
     done
 }
@@ -169,7 +172,7 @@ run_cgi_test() {
     local query_string="what=$what"
     dump "Running CGI test for query string: $query_string"
 
-    QUERY_STRING="$query_string" "$script_dir/../app.py" > "$curl_output_file"
+    QUERY_STRING="$query_string" "$script_dir/../src/app.py" > "$curl_output_file"
 
     cgi_check_header
 

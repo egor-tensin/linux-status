@@ -24,6 +24,10 @@ def script_dir():
     return os.path.dirname(os.path.realpath(__file__))
 
 
+def default_html_dir():
+    return os.path.join(script_dir(), 'html')
+
+
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         try:
@@ -40,6 +44,14 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             return
 
 
+def make_server(port):
+    addr = ('', port)
+    server = http.server.HTTPServer
+    if sys.version_info >= (3, 7):
+        server = http.server.ThreadingHTTPServer
+    return server(addr, RequestHandler)
+
+
 def parse_args(args=None):
     if args is None:
         args = sys.argv[1:]
@@ -47,19 +59,20 @@ def parse_args(args=None):
     parser.add_argument('-p', '--port', metavar='PORT',
                         type=int, default=DEFAULT_PORT,
                         help='set port number')
+    parser.add_argument('-d', '--dir', metavar='DIR',
+                        default=default_html_dir(),
+                        help='HTML directory path')
     return parser.parse_args(args)
 
 
 def main(args=None):
-    # It's a failsafe; this script is only allowed to serve the directory it
-    # resides in.
-    os.chdir(script_dir())
     args = parse_args(args)
-    addr = ('', args.port)
-    server = http.server.HTTPServer
-    if sys.version_info >= (3, 7):
-        server = http.server.ThreadingHTTPServer
-    httpd = server(addr, RequestHandler)
+
+    # It's a failsafe; the script is not allowed to serve a random current
+    # working directory.
+    os.chdir(args.dir)
+
+    httpd = make_server(args.port)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

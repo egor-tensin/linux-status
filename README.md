@@ -5,17 +5,10 @@ linux-status
 [![Packages (Debian)](https://github.com/egor-tensin/linux-status/actions/workflows/debian.yml/badge.svg)](https://github.com/egor-tensin/linux-status/actions/workflows/debian.yml)
 [![Publish (Launchpad)](https://github.com/egor-tensin/linux-status/actions/workflows/ppa.yml/badge.svg)](https://github.com/egor-tensin/linux-status/actions/workflows/ppa.yml)
 
-Simple Linux status web page.
+Simple Linux server monitoring.
 
-Shows your `top`, systemd units & timers, allows you to reboot the server, etc.
-
----
-
-![Example page][example]
-
-[example]: img/example.png "Example page"
-
----
+Shows your `top`, Docker container status, systemd units & timers, allows you
+to reboot the server, etc.
 
 Installation
 ------------
@@ -33,12 +26,14 @@ Usage
 
 To manually start a web server on port 18101, run:
 
-    > python3 server.py
+    > ./src/server.py
 
-TODO
-----
+Screenshot
+----------
 
-* Show an error if a AJAX call fails.
+![Example page][example]
+
+[example]: doc/example.png "Example page"
 
 License
 -------
