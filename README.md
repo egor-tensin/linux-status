@@ -5,7 +5,7 @@ linux-status
 [![Packages (Debian)](https://github.com/egor-tensin/linux-status/actions/workflows/debian.yml/badge.svg)](https://github.com/egor-tensin/linux-status/actions/workflows/debian.yml)
 [![Publish (Launchpad)](https://github.com/egor-tensin/linux-status/actions/workflows/ppa.yml/badge.svg)](https://github.com/egor-tensin/linux-status/actions/workflows/ppa.yml)
 
-Simple Linux status web page.
+Simple Linux server monitoring.
 
 Shows your `top`, Docker container status, systemd units & timers, allows you
 to reboot the server, etc.
