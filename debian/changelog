@@ -1,3 +1,12 @@
+linux-status (2.1.1-1) unstable; urgency=medium
+
+  * index.html: commands closer to buttons
+  * index.html: get rid of stupid # <a>nchors
+  * index.html: hostname header too large on mobile
+  * index.html: shorten commands
+
+ -- Egor Tensin <Egor.Tensin@gmail.com>  Mon, 11 Apr 2022 11:42:00 +0000
+
 linux-status (2.1-1) unstable; urgency=medium
 
   * src: shorter import
