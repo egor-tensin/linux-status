@@ -1,3 +1,11 @@
+linux-status (2.1-1) unstable; urgency=medium
+
+  * src: shorter import
+  * app.py: print HTTP status when CGIing
+  * support disallowing power requests
+
+ -- Egor Tensin <Egor.Tensin@gmail.com>  Mon, 11 Apr 2022 09:44:06 +0000
+
 linux-status (2.0-1) unstable; urgency=medium
 
   * server.py: minor refactoring
