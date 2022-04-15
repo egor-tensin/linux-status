@@ -20,15 +20,22 @@ ifeq ($$(origin $(1)),command line)
 endif
 endef
 
+NAME      ?= Egor Tensin
+EMAIL     ?= Egor.Tensin@gmail.com
 PPA_OWNER ?= egor-tensin
 PPA_NAME  ?= linux-status
 GPG_KEY   ?= 3B3EF1235420917E0DB0723991D679FB92B036CB
 DIST      ?= bionic
 
+$(eval $(call noexpand,NAME))
+$(eval $(call noexpand,EMAIL))
 $(eval $(call noexpand,PPA_OWNER))
 $(eval $(call noexpand,PPA_NAME))
 $(eval $(call noexpand,GPG_KEY))
 $(eval $(call noexpand,DIST))
+
+export NAME
+export EMAIL
 
 this_dir   := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 root       := $(this_dir)/..
