@@ -53,6 +53,12 @@ deps:
 dch:
 	gbp dch --distribution=unstable
 
+.PHONY: commit
+commit:
+	cd -- '$(call escape,$(root))' && \
+		version="$$( dpkg-parsechangelog --show-field Version )" && \
+		git commit -m "debian: $$version"
+
 .PHONY: tag
 tag:
 	pushd '$(call escape,$(root))' && gbp buildpackage --git-tag-only
