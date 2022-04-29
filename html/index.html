@@ -17,7 +17,7 @@
             </div>
             <div class="btn-group" role="group" id="power_buttons">
               <button type="button" class="btn btn-sm btn-warning" onclick="reboot();">Reboot</button>
-              <button type="button" class="btn btn-sm btn-danger" onclick="shutdown();">Shutdown</button>
+              <button type="button" class="btn btn-sm btn-danger" onclick="poweroff();">Shutdown</button>
             </div>
           </div>
         </div>
@@ -61,11 +61,11 @@
       </div>
       <div id="users">
       </div>
-      <div class="modal" id="power_request_modal" tabindex="-1" aria-labelledby="power_request_modal_header" aria-hidden="true">
+      <div class="modal" id="power_request_modal_forbidden" tabindex="-1" aria-labelledby="power_request_modal_forbidden_header" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="power_request_modal_header">Forbidden</h5>
+              <h5 class="modal-title" id="power_request_modal_forbidden_header">Forbidden</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -73,6 +73,38 @@
             <div class="modal-body">Sorry, power management is turned off on this instance.</div>
             <div class="modal-footer">
               <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal" id="reboot_modal_success" tabindex="-1" aria-labelledby="reboot_modal_success_header" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="reboot_modal_success_header">Reboot</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">Done! Please give some time for the machine to come back up.</div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal" id="poweroff_modal_success" tabindex="-1" aria-labelledby="poweroff_modal_success_header" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="poweroff_modal_success_header">Shutdown</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">Done! Please give some time for the machine to shut down gracefully.</div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
             </div>
           </div>
         </div>
@@ -122,32 +154,40 @@ function dump_fail(data) {
     console.log('Response was:\n' + data.responseText);
 }
 
-function get(url, success_callback) {
-    $.get(url, success_callback).fail(dump_fail);
+function get(url, success_callback, fail_callback = dump_fail) {
+    $.get(url, success_callback).fail(fail_callback);
+}
+
+function on_power_request_success(url) {
+    $('#' + url + '_modal_success').modal();
 }
 
 function on_power_request_forbidden() {
-    $('#power_request_modal').modal();
+    $('#power_request_modal_forbidden').modal();
+}
+
+function on_power_request_fail(data) {
+    switch (data.status) {
+        case 403:
+            on_power_request_forbidden();
+            break;
+        default:
+            dump_fail(data);
+            break;
+    }
 }
 
 function power_request(url) {
-    $.get(url).fail(function(data) {
-        switch (data.status) {
-            case 403:
-                on_power_request_forbidden();
-                break;
-            default:
-                dump_fail(data);
-                break;
-        }
-    });
+    get(url, function() {
+        on_power_request_success(url);
+    }, on_power_request_fail);
 }
 
 function reboot() {
     power_request('reboot');
 }
 
-function shutdown() {
+function poweroff() {
     power_request('poweroff');
 }
 
