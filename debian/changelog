@@ -1,3 +1,9 @@
+linux-status (2.2-1) unstable; urgency=medium
+
+  * html: show modals for power mgmt failures
+
+ -- Egor Tensin <Egor.Tensin@gmail.com>  Fri, 29 Apr 2022 23:50:49 +0200
+
 linux-status (2.1.3-1) unstable; urgency=medium
 
   * README: update
