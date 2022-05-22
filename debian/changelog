@@ -1,3 +1,9 @@
+linux-status (2.2.1-1) unstable; urgency=medium
+
+  * update URLs
+
+ -- Egor Tensin <Egor.Tensin@gmail.com>  Sun, 22 May 2022 11:01:08 +0200
+
 linux-status (2.2-2) unstable; urgency=medium
 
   * debian/Makefile: add commit target
