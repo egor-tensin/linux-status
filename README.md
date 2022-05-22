@@ -11,7 +11,7 @@ Shows your `top`, Docker container status, systemd units & timers, allows you
 to reboot the server, etc.
 
 For example, see an instance running on my server at
-https://egort.name/status/.
+https://status.egort.name/.
 
 Installation
 ------------
