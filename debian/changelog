@@ -1,3 +1,9 @@
+linux-status (2.3-1) unstable; urgency=medium
+
+  * log real client IP address
+
+ -- Egor Tensin <Egor.Tensin@gmail.com>  Thu, 30 Jun 2022 12:46:16 +0500
+
 linux-status (2.2.1-1) unstable; urgency=medium
 
   * update URLs
