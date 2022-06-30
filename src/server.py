@@ -32,6 +32,13 @@ def default_html_dir():
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
     ARGS = None
 
+    def address_string(self):
+        if 'x-forwarded-for' in self.headers:
+            return self.headers['x-forwarded-for'].split(',')[0].strip()
+        if 'x-real-ip' in self.headers:
+            return self.headers['x-real-ip']
+        return super().address_string()
+
     def do_GET(self):
         try:
             request = Request.from_http_path(self.path)
