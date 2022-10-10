@@ -280,6 +280,9 @@ function make_docker_table_row(info) {
 
 function make_docker_table(data) {
     let body = $('<tbody/>');
+    data.sort(function(a, b) {
+        return a.name.localeCompare(b.name);
+    });
     data.forEach(function(info) {
         body.append(make_docker_table_row(info));
     });
