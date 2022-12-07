@@ -6,6 +6,7 @@
 # Distributed under the MIT License.
 
 set -o errexit -o nounset -o pipefail
+shopt -s inherit_errexit lastpipe
 
 script_dir="$( dirname -- "${BASH_SOURCE[0]}" )"
 script_dir="$( cd -- "$script_dir" && pwd )"
