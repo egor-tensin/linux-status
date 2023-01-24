@@ -11,16 +11,16 @@ debian/build-area/.
 
       git merge TAG
 
-  * Add a changelog entry (you'll need to fix it manually):
+  * Add a changelog entry (you'll need to fix the version manually):
 
       make dch
 
-  * Make a source package:
+  * To test, make a source package:
 
       make src
       make src/test  # Ignores uncommitted changes.
 
-  * Make a binary package:
+  * To test, make a binary package:
 
       make bin
       make bin/test  # Ignores uncommmited changes.
@@ -30,6 +30,10 @@ debian/build-area/.
       git add changelog
       make commit
       make tag
+
+  * You can push the changes to GitHub now, and it should take care of the
+    rest.  Otherwise, you can upload the package to Launchpad manually as
+    described below.
 
   * Upload the source package to the PPA:
 
