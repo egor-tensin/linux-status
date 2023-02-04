@@ -20,13 +20,15 @@ jobs:
           gpg_private_key: '${{ secrets.GPG_PRIVATE_KEY }}'
           passphrase: '${{ secrets.GPG_PASSPHRASE }}'
       - name: Install dependencies
-        run: cd debian && sudo make deps
+        run: sudo make -C debian deps
       - name: Create cowbuilder image
-        run: cd debian && sudo make dist/create
+        run: sudo make -C debian dist/create
       - name: Build binary package
-        run: cd debian && make dist
+        run: make -C debian dist
+      - name: Clean the build area
+        run: make -C debian clean
       - name: Build source package
-        run: cd debian && make clean && make src
+        run: make -C debian src
       - name: Upload to PPA
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/debian/')
-        run: cd debian && make upload
+        run: make -C debian upload

@@ -15,9 +15,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install dependencies
-        run: cd debian && sudo make deps
+        run: sudo make -C debian deps
       - name: Build binary package
-        run: cd debian && make bin/test
+        run: make -C debian bin/test
       - name: Upload binary package
         uses: actions/upload-artifact@v3
         with:
