@@ -61,40 +61,40 @@ commit:
 
 .PHONY: tag
 tag:
-	pushd '$(call escape,$(root))' && gbp buildpackage --git-tag-only
+	cd -- '$(call escape,$(root))' && gbp buildpackage --git-tag-only
 
 .PHONY: src/test
 src/test:
-	pushd '$(call escape,$(root))' && gbp buildpackage --git-ignore-new -S -us -uc
+	cd -- '$(call escape,$(root))' && gbp buildpackage --git-ignore-new -S -us -uc
 
 .PHONY: src
 src:
-	pushd '$(call escape,$(root))' && gbp buildpackage -S '-k0x$(call escape,$(GPG_KEY))'
+	cd -- '$(call escape,$(root))' && gbp buildpackage -S '-k0x$(call escape,$(GPG_KEY))'
 
 .PHONY: bin/test
 bin/test:
-	pushd '$(call escape,$(root))' && gbp buildpackage --git-ignore-new -b -us -uc
+	cd -- '$(call escape,$(root))' && gbp buildpackage --git-ignore-new -b -us -uc
 
 .PHONY: bin
 bin:
-	pushd '$(call escape,$(root))' && gbp buildpackage -b '-k0x$(call escape,$(GPG_KEY))'
+	cd -- '$(call escape,$(root))' && gbp buildpackage -b '-k0x$(call escape,$(GPG_KEY))'
 
 .PHONY: dist/create
 dist/create:
-	pushd '$(call escape,$(root))' && env 'DIST=$(call escape,$(DIST))' git-pbuilder create
+	cd -- '$(call escape,$(root))' && env 'DIST=$(call escape,$(DIST))' git-pbuilder create
 
 .PHONY: dist/update
 dist/update:
-	pushd '$(call escape,$(root))' && env 'DIST=$(call escape,$(DIST))' git-pbuilder update
+	cd -- '$(call escape,$(root))' && env 'DIST=$(call escape,$(DIST))' git-pbuilder update
 
 .PHONY: dist/test
 dist/test:
-	pushd '$(call escape,$(root))' && gbp buildpackage --git-ignore-new --git-pbuilder '--git-dist=$(call escape,$(DIST))'
+	cd -- '$(call escape,$(root))' && gbp buildpackage --git-ignore-new --git-pbuilder '--git-dist=$(call escape,$(DIST))'
 
 .PHONY: dist
 dist:
-	pushd '$(call escape,$(root))' && gbp buildpackage --git-pbuilder '--git-dist=$(call escape,$(DIST))'
-	pushd '$(call escape,$(root))' && debsign '-k0x$(call escape,$(GPG_KEY))' --debs-dir '$(call escape,$(build_area))'
+	cd -- '$(call escape,$(root))' && gbp buildpackage --git-pbuilder '--git-dist=$(call escape,$(DIST))'
+	cd -- '$(call escape,$(root))' && debsign '-k0x$(call escape,$(GPG_KEY))' --debs-dir '$(call escape,$(build_area))'
 
 .PHONY: upload
 upload:
