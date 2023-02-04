@@ -65,7 +65,7 @@ tag:
 
 .PHONY: src/test
 src/test:
-	cd -- '$(call escape,$(root))' && gbp buildpackage --git-ignore-new -S -us -uc
+	cd -- '$(call escape,$(root))' && gbp buildpackage -S --no-sign --git-ignore-new
 
 .PHONY: src
 src:
@@ -73,7 +73,7 @@ src:
 
 .PHONY: bin/test
 bin/test:
-	cd -- '$(call escape,$(root))' && gbp buildpackage --git-ignore-new -b -us -uc
+	cd -- '$(call escape,$(root))' && gbp buildpackage -b --no-sign --git-ignore-new
 
 .PHONY: bin
 bin:
