@@ -47,7 +47,7 @@ DO:
 .PHONY: deps
 deps:
 	apt-get update
-	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends build-essential cowbuilder devscripts dh-make dput git-buildpackage
+	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends build-essential cowbuilder devscripts dh-make dput git-buildpackage vim
 
 .PHONY: dch
 dch:
