@@ -2,7 +2,8 @@ name: Publish (Launchpad)
 
 on:
   push:
-    tags: 'debian/*'
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
@@ -27,4 +28,5 @@ jobs:
       - name: Build source package
         run: cd debian && make clean && make src
       - name: Upload to PPA
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/debian/')
         run: cd debian && make upload
