@@ -98,7 +98,7 @@ dist:
 
 .PHONY: upload
 upload:
-	find '$(call escape,$(build_area))' -type f -name '*.changes' -exec dput 'ppa:$(call escape,$(PPA_OWNER))/$(call escape,$(PPA_NAME))/ubuntu/$(DIST)' {} ';'
+	find '$(call escape,$(build_area))' -type f -name '*.changes' -exec dput '$(call escape,ppa:$(PPA_OWNER)/$(PPA_NAME)/ubuntu/$(DIST))' {} ';'
 
 .PHONY: clean
 clean:
