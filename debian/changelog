@@ -1,3 +1,14 @@
+linux-status (2.3.2-1) unstable; urgency=medium
+
+  * workflows/ci: upgrade actions
+  * workflows: upgrade actions
+  * update URLs
+  * fix preludes in bash scripts
+  * workflows/ci: fix Python 3.6 tests
+  * debian/README: update
+
+ -- Egor Tensin <Egor.Tensin@gmail.com>  Sat, 04 Feb 2023 20:30:30 +0000
+
 linux-status (2.3.1-1) unstable; urgency=medium
 
   * sort Docker containers by name
