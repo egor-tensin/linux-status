@@ -25,7 +25,7 @@ EMAIL     ?= Egor.Tensin@gmail.com
 PPA_OWNER ?= egor-tensin
 PPA_NAME  ?= linux-status
 GPG_KEY   ?= 3B3EF1235420917E0DB0723991D679FB92B036CB
-DIST      ?= bionic
+DIST      ?= focal
 
 $(eval $(call noexpand,NAME))
 $(eval $(call noexpand,EMAIL))
