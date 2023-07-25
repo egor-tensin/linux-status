@@ -2,7 +2,8 @@ linux-status for Debian
 ----------------------
 
 There's a Vagrantfile to make maintenance easier.  To start, use `vagrant up`,
-then `vagrant ssh`.
+then `vagrant ssh`.  The project will be in /vagrant; kill the VM using
+`vagrant destroy -f` when you're done.
 
 There're a bunch of useful one-liners in Makefile.  Everything is built in
 debian/build-area/.
@@ -46,9 +47,9 @@ debian/build-area/.
   * Make a binary package using pbuilder (useful for testing that the package
     builds on a particular distribution):
 
-      make dist/create DIST=focal
-      make dist/update DIST=focal
-      make dist        DIST=focal
-      make dist/test   DIST=focal  # Ignores uncommitted changes.
+      make DIST=focal dist/create
+      make DIST=focal dist/update
+      make DIST=focal dist
+      make DIST=focal dist/test  # Ignores uncommitted changes.
 
  -- Egor Tensin <Egor.Tensin@gmail.com>  Mon, 08 Mar 2021 07:33:14 +0000
