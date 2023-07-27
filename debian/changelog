@@ -1,3 +1,11 @@
+linux-status (2.4-1) unstable; urgency=medium
+
+  * debian/Makefile: move the prelude to prelude.mk
+  * debian/README: update
+  * add thermal sensor readings from /sys/class/thermal
+
+ -- Egor Tensin <Egor.Tensin@gmail.com>  Thu, 27 Jul 2023 18:56:09 +0000
+
 linux-status (2.3.2-3) unstable; urgency=medium
 
   * debian: force inclusion of the original sources
