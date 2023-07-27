@@ -47,6 +47,7 @@ from http import HTTPStatus
 import json
 import os
 import pwd
+import re
 import shlex
 import socket
 import subprocess
@@ -314,12 +315,71 @@ class DockerStatus(DockerInspect):
             'status': info['State']['Status'],
         }
 
+
 class Hostname(Task):
     def run(self):
         pass
 
     def result(self):
         return socket.gethostname()
+
+
+class ThermalInfo(Task):
+    ROOT = '/sys/class/thermal'
+
+    @staticmethod
+    def _collect_dirs():
+        root = ThermalInfo.ROOT
+        dirs = [
+            dir for dir in os.listdir(root)
+            if re.match(r'^thermal_zone\d+$', dir)
+        ]
+        dirs = sorted(dirs)
+        dirs = [os.path.join(root, dir) for dir in dirs]
+        return dirs
+
+    @staticmethod
+    def _read_temp(dir):
+        with open(os.path.join(dir, 'temp')) as fd:
+            temp = fd.read()
+            return ThermalInfo._parse_temp(temp)
+
+    @staticmethod
+    def _parse_temp(temp):
+        if not temp.endswith('\n'):
+            raise RuntimeError('invalid temp file contents: ' + temp)
+        temp = temp.strip('\n')
+        try:
+            temp = int(temp)
+        except ValueError:
+            raise RuntimeError('invalid temp file contents: ' + temp)
+        return round(temp / 1000, 2)
+
+    @staticmethod
+    def _read_type(dir):
+        with open(os.path.join(dir, 'type')) as fd:
+            type = fd.read()
+            return ThermalInfo._parse_type(type)
+
+    @staticmethod
+    def _parse_type(type):
+        if not type.endswith('\n'):
+            raise RuntimeError('invalid type file contents: ' + type)
+        type = type.strip('\n')
+        return type
+
+    @staticmethod
+    def _read_dir(dir):
+        return {
+            'temp': ThermalInfo._read_temp(dir),
+            'type': ThermalInfo._read_type(dir),
+        }
+
+    def run(self):
+        pass
+
+    def result(self):
+        return [self._read_dir(dir) for dir in ThermalInfo._collect_dirs()]
 
 
 class Top(Command):
@@ -401,6 +461,7 @@ class Status(TaskList):
     def __init__(self):
         tasks = {
             'hostname': Hostname(),
+            'thermal': ThermalInfo(),
             'system': SystemStatus(),
             'user': UserStatusList(),
         }
