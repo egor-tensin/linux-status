@@ -10,13 +10,13 @@
     <div class="container flex-shrink-0">
       <div class="row mt-3">
         <div class="col">
-          <div style="display: flex; justify-content: space-between; align-items: center; gap: .5em;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: .5em;">
             <div>
               <h1 class="h2" id="hostname">-</h1>
               <p class="mb-0 small">refreshed every <span id="status_refresh_interval">-</span> seconds</p>
             </div>
             <div>
-              <div class="btn-group" role="group" id="power_buttons">
+              <div class="btn-group" role="group" style="width: 100%;" id="power_buttons">
                 <button type="button" class="btn btn-sm btn-warning" onclick="reboot();">Reboot</button>
                 <button type="button" class="btn btn-sm btn-danger" onclick="poweroff();">Shutdown</button>
               </div>
@@ -210,16 +210,14 @@ function set_thermal(data) {
         let type = info['type'];
         let temp = info['temp'].toFixed(2) + '&deg;C';
         let row = $('<tr/>')
-            .append($('<td/>', {'class': 'py-0'})
-                .append($('<code/>', {'class': 'text-reset'}).text(type)))
-            .append($('<td/>', {'class': 'py-0 text-right'})
-                .append($('<code/>', {'class': 'text-reset'}).html(temp)));
+            .append($('<td/>', {'class': 'pr-1'}).text(type))
+            .append($('<td/>', {'class': 'pl-1 text-right'}).html(temp));
         body.append(row);
     });
 
     $('#thermal').empty();
     $('#thermal').append($('<div/>', {'class': 'table-responsive'})
-        .append($('<table/>', {'class': 'table table-borderless table-sm text-nowrap mb-0'})
+        .append($('<table/>', {'class': 'text-nowrap', 'style': 'width: 100%;'})
             .append(body)));
 }
 
