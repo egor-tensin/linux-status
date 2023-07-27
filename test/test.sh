@@ -141,10 +141,11 @@ run_curl_tests() {
     run_curl_test '/index.html' '<link rel="stylesheet" href="css/bootstrap.min.css">' 'var status_refresh_interval_seconds'
 
     # /status returns a JSON with a number of fields:
-    run_curl_test '/status' '"hostname":' '"system":' '"user":'
-
-    # /top is a `top` output:
+    run_curl_test '/status' '"hostname":' '"thermal":' '"system":' '"user":'
+    # /top is `top` output:
     run_curl_test '/top' 'load average:'
+    # /thermal is also an endpoint:
+    run_curl_test '/thermal'
 }
 
 cgi_check_header() {
@@ -187,9 +188,11 @@ run_cgi_tests() {
     # Check that app.py still works as a CGI script.
 
     # /status returns a JSON with a number of fields:
-    run_cgi_test 'status' '"hostname":' '"system":' '"user":'
-    # /top is a `top` output:
+    run_cgi_test 'status' '"hostname":' '"thermal":' '"system":' '"user":'
+    # /top is `top` output:
     run_cgi_test 'top' 'load average:'
+    # /thermal is also an endpoint:
+    run_cgi_test 'thermal'
 }
 
 main() {
