@@ -585,6 +585,7 @@ def cgi_one_value(params, name, default=None):
 class Request(Enum):
     STATUS = 'status'
     TOP = 'top'
+    THERMAL = 'thermal'
     REBOOT = 'reboot'
     POWEROFF = 'poweroff'
 
@@ -610,6 +611,8 @@ class Request(Enum):
             return Status().complete()
         if self is Request.TOP:
             return Top().complete()
+        if self is Request.THERMAL:
+            return ThermalInfo().complete()
 
         if self in [Request.REBOOT, Request.POWEROFF] and self.disable_power:
             return Response(None, HTTPStatus.FORBIDDEN)
