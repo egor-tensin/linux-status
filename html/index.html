@@ -15,9 +15,12 @@
               <h1 class="h2" id="hostname">-</h1>
               <p class="mb-0 small">refreshed every <span id="status_refresh_interval">-</span> seconds</p>
             </div>
-            <div class="btn-group" role="group" id="power_buttons">
-              <button type="button" class="btn btn-sm btn-warning" onclick="reboot();">Reboot</button>
-              <button type="button" class="btn btn-sm btn-danger" onclick="poweroff();">Shutdown</button>
+            <div>
+              <div class="btn-group" role="group" id="power_buttons">
+                <button type="button" class="btn btn-sm btn-warning" onclick="reboot();">Reboot</button>
+                <button type="button" class="btn btn-sm btn-danger" onclick="poweroff();">Shutdown</button>
+              </div>
+              <div title="Thermal sensor readings from /sys/class/thermal. Only the first few are shown." class="small mt-1" id="thermal">-</div>
             </div>
           </div>
         </div>
@@ -194,6 +197,30 @@ function poweroff() {
 function set_hostname(data) {
     $('#hostname').text(data);
     $('title').text(data);
+}
+
+var thermal_info_max_rows = 2;
+
+function set_thermal(data) {
+    data = data.slice(0, thermal_info_max_rows);
+
+    let body = $('<tbody/>');
+
+    data.forEach(function(info) {
+        let type = info['type'];
+        let temp = info['temp'].toFixed(2) + '&deg;C';
+        let row = $('<tr/>')
+            .append($('<td/>', {'class': 'py-0'})
+                .append($('<code/>', {'class': 'text-reset'}).text(type)))
+            .append($('<td/>', {'class': 'py-0 text-right'})
+                .append($('<code/>', {'class': 'text-reset'}).html(temp)));
+        body.append(row);
+    });
+
+    $('#thermal').empty();
+    $('#thermal').append($('<div/>', {'class': 'table-responsive'})
+        .append($('<table/>', {'class': 'table table-borderless table-sm text-nowrap mb-0'})
+            .append(body)));
 }
 
 function set_top(data) {
@@ -401,6 +428,7 @@ function refresh_status() {
     get('status', function(data) {
         data = JSON.parse(data);
         set_hostname(data['hostname']);
+        set_thermal(data['thermal']);
         set_system(data['system']);
         set_users(data['user']);
     });
@@ -425,18 +453,6 @@ function main() {
 $(function() {
     main();
 });
-
-function on_resize(width) {
-    if (width < 576) { // xs, in Bootstrap's terms
-        $('#power_buttons').attr('class', 'btn-group-vertical');
-    } else {
-        $('#power_buttons').attr('class', 'btn-group');
-    }
-}
-
-$(window).bind('resize', function() {
-    on_resize($(this).width());
-}).trigger('resize');
     </script>
   </body>
 </html>
