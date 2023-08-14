@@ -1,3 +1,9 @@
+linux-status (2.4.3-1) unstable; urgency=medium
+
+  * top: fix -E/-e arguments on newer top's
+
+ -- Egor Tensin <Egor.Tensin@gmail.com>  Mon, 14 Aug 2023 23:58:50 +0000
+
 linux-status (2.4.2-1) unstable; urgency=medium
 
   * html: prevent power buttons from jumping
