@@ -398,8 +398,12 @@ class Top(Command):
             return Top.COMMAND
         help_output = run_do('top', '-h')
         args = ['top', '-b', '-n', '1', '-w', '512']
+        memory_scaling_args = ['-E', 'm', '-e', 'm']
         if 'Ee' in help_output:
-            args += ['-E', 'm', '-e', 'm']
+            args += memory_scaling_args
+        else:
+            if '-E, ' in help_output and '-e, ' in help_output:
+                args += memory_scaling_args
         Top.COMMAND = args
         return Top.COMMAND
 
