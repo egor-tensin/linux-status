@@ -1,3 +1,9 @@
+linux-status (2.4.4-1) unstable; urgency=medium
+
+  * switch to tensin.name
+
+ -- Egor Tensin <Egor.Tensin@gmail.com>  Fri, 01 Dec 2023 20:49:45 +0000
+
 linux-status (2.4.3-1) unstable; urgency=medium
 
   * top: fix -E/-e arguments on newer top's
