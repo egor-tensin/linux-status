@@ -12,7 +12,10 @@ Vagrant.configure("2") do |config|
   # Weirdly enough, VirtualBox's shared folders didn't quite work for me.
   # gbp buildpackage would just exit with FileExistsError, which doesn't
   # happen with NFS shares.
-  config.vm.synced_folder "../", "/vagrant", type: "nfs"
+  config.vm.synced_folder "../", "/vagrant",
+    type: "nfs",
+    nfs_udp: false,
+    nfs_version: "4"
 
   config.vm.provider "libvirt" do |v|
     v.cpus = 2
