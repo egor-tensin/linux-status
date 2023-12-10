@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright (c) 2021 Egor Tensin <Egor.Tensin@gmail.com>
+# Copyright (c) 2021 Egor Tensin <egor@tensin.name>
 # This file is part of the "linux-status" project.
 # For details, see https://github.com/egor-tensin/linux-status.
 # Distributed under the MIT License.
