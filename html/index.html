@@ -256,12 +256,10 @@ function docker_container_format_status(info) {
         result += ` (${info.exit_code})`;
 
     if (info.status == 'running') {
-        if (info.health == 'unhealthy') {
-            result = 'Up (unhealthy)';
-        } else {
-            let since = new Date(info.started_at);
-            result = `Up ${format_duration(Date.now() - since)}`;
-        }
+        let since = new Date(info.started_at);
+        result = `Up ${format_duration(Date.now() - since)}`;
+        if (info.health == 'unhealthy')
+            result = `${result} (unhealthy)`;
     }
 
     return result;
