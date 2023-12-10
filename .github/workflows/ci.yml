@@ -9,10 +9,8 @@ jobs:
   test:
     strategy:
       matrix:
-        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
-    # Unpin when this is fixed:
-    # https://github.com/actions/setup-python/issues/544
-    runs-on: ubuntu-20.04
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.x']
+    runs-on: ubuntu-latest
     name: 'Python ${{ matrix.python-version }}'
     steps:
       - name: Checkout
