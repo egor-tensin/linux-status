@@ -1,7 +1,7 @@
 Source: linux-status
 Section: admin
 Priority: optional
-Maintainer: Egor Tensin <Egor.Tensin@gmail.com>
+Maintainer: Egor Tensin <egor@tensin.name>
 Build-Depends: debhelper-compat (= 10)
 Standards-Version: 4.4.1
 Homepage: https://github.com/egor-tensin/linux-status

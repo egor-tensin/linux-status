@@ -1,14 +1,14 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: linux-status
-Upstream-Contact: Egor Tensin <Egor.Tensin@gmail.com>
+Upstream-Contact: Egor Tensin <egor@tensin.name>
 Source: https://github.com/egor-tensin/linux-status
 
 Files: *
-Copyright: 2018-2022 Egor Tensin <Egor.Tensin@gmail.com>
+Copyright: 2018-2023 Egor Tensin <egor@tensin.name>
 License: MIT
 
 Files: debian/*
-Copyright: 2021-2022 Egor Tensin <Egor.Tensin@gmail.com>
+Copyright: 2021-2023 Egor Tensin <egor@tensin.name>
 License: MIT
 
 Files: html/css/bootstrap.min.css html/js/bootstrap.bundle.min.js

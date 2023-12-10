@@ -1,7 +1,7 @@
 include prelude.mk
 
 NAME      ?= Egor Tensin
-EMAIL     ?= Egor.Tensin@gmail.com
+EMAIL     ?= egor@tensin.name
 PPA_OWNER ?= egor-tensin
 PPA_NAME  ?= linux-status
 GPG_KEY   ?= 3B3EF1235420917E0DB0723991D679FB92B036CB
