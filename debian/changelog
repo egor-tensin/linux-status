@@ -1,3 +1,13 @@
+linux-status (2.4.5-1) unstable; urgency=medium
+
+  * workflows/ci: ditch Bionic
+  * html: display container running time, even if unhealthy
+  * html: add a comment with a reference link
+  * switch to egor@tensin.name
+  * debian: switch to egor@tensin.name
+
+ -- Egor Tensin <egor@tensin.name>  Sun, 10 Dec 2023 09:05:45 +0000
+
 linux-status (2.4.4-1) unstable; urgency=medium
 
   * switch to tensin.name
