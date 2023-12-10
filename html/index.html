@@ -238,6 +238,10 @@ function loop_top() {
     $('#top_refresh_interval').text(top_refresh_interval_seconds);
 }
 
+// Container's State.Status field values are described in the API reference:
+//
+//     https://docs.docker.com/engine/api/v1.43/#tag/Container/operation/ContainerInspect
+//
 function docker_container_is_ok(info) {
     if (info.status == 'restarting' || info.status == 'dead')
         return false;
