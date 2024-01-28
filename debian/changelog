@@ -1,3 +1,10 @@
+linux-status (2.4.6-1) unstable; urgency=medium
+
+  * workflows/ci: upgrade actions
+  * workflows: upgrade actions
+
+ -- Egor Tensin <egor@tensin.name>  Sun, 28 Jan 2024 11:53:59 +0000
+
 linux-status (2.4.5-1) unstable; urgency=medium
 
   * workflows/ci: ditch Bionic
