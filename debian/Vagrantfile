@@ -6,6 +6,18 @@ EMAIL = 'egor@tensin.name'
 GPG_KEY = '09AEA2BAD52882A1AF9D6042F218DB829A9905B5'
 UID = Process.euid
 
+REQUIRED_PLUGINS = %w(
+  vagrant-libvirt
+  vagrant-reload
+)
+exit unless REQUIRED_PLUGINS.all? do |plugin|
+  Vagrant.has_plugin?(plugin) || (
+    puts "The #{plugin} plugin is required. Please install it with:"
+    puts "    vagrant plugin install #{plugin}"
+    false
+  )
+end
+
 Vagrant.configure("2") do |config|
   config.vm.box = "generic/ubuntu2004"
 
