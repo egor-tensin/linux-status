@@ -11,7 +11,7 @@ jobs:
     name: Binary package
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Install dependencies
@@ -19,7 +19,7 @@ jobs:
       - name: Build binary package
         run: make -C debian bin/test
       - name: Upload binary package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: build-area
           path: debian/build-area/
