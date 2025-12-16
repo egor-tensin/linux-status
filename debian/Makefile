@@ -4,7 +4,7 @@ NAME      ?= Egor Tensin
 EMAIL     ?= egor@tensin.name
 PPA_OWNER ?= egor-tensin
 PPA_NAME  ?= linux-status
-GPG_KEY   ?= 3B3EF1235420917E0DB0723991D679FB92B036CB
+GPG_KEY   ?= 09AEA2BAD52882A1AF9D6042F218DB829A9905B5
 DIST      ?= focal
 
 $(eval $(call noexpand,NAME))
