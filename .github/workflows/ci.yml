@@ -5,6 +5,23 @@ on:
   workflow_dispatch:
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Linting
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+      - name: Run black
+        uses: psf/black@stable
+        with:
+          # > Please note that the --check flag is required so that the
+          # > workflow fails if Black finds files that need to be formatted.
+          options: --check --verbose --skip-string-normalization
+
   test:
     strategy:
       matrix:
@@ -18,12 +35,6 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: '${{ matrix.python-version }}'
-      - name: Run black
-        uses: psf/black@stable
-        with:
-          # > Please note that the --check flag is required so that the
-          # > workflow fails if Black finds files that need to be formatted.
-          options: --check --verbose --skip-string-normalization
       - name: Run tests as root
         run: sudo ./test/test.sh
       - name: Run tests
