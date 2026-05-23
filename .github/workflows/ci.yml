@@ -18,6 +18,12 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: '${{ matrix.python-version }}'
+      - name: Run black
+        uses: psf/black@stable
+        with:
+          # > Please note that the --check flag is required so that the
+          # > workflow fails if Black finds files that need to be formatted.
+          options: --check --verbose --skip-string-normalization
       - name: Run tests as root
         run: sudo ./test/test.sh
       - name: Run tests
