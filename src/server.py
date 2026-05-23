@@ -17,7 +17,6 @@ import traceback
 
 from app import Request, Response
 
-
 DEFAULT_PORT = 18101
 
 
@@ -67,14 +66,27 @@ def parse_args(args=None):
     if args is None:
         args = sys.argv[1:]
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--port', metavar='PORT',
-                        type=int, default=DEFAULT_PORT,
-                        help='set port number')
-    parser.add_argument('-n', '--disable-power', action='store_true',
-                        help='disable reboot/poweroff requests')
-    parser.add_argument('-d', '--dir', metavar='DIR',
-                        default=default_html_dir(),
-                        help='HTML directory path')
+    parser.add_argument(
+        '-p',
+        '--port',
+        metavar='PORT',
+        type=int,
+        default=DEFAULT_PORT,
+        help='set port number',
+    )
+    parser.add_argument(
+        '-n',
+        '--disable-power',
+        action='store_true',
+        help='disable reboot/poweroff requests',
+    )
+    parser.add_argument(
+        '-d',
+        '--dir',
+        metavar='DIR',
+        default=default_html_dir(),
+        help='HTML directory path',
+    )
     return parser.parse_args(args)
 
 

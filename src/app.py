@@ -116,7 +116,14 @@ class Response:
 
 
 def run_do(*args, **kwargs):
-    output = subprocess.run(args, stdin=DEVNULL, stdout=PIPE, stderr=STDOUT, universal_newlines=True, **kwargs)
+    output = subprocess.run(
+        args,
+        stdin=DEVNULL,
+        stdout=PIPE,
+        stderr=STDOUT,
+        universal_newlines=True,
+        **kwargs,
+    )
     # Include the output in the exception's message:
     try:
         output.check_returncode()
@@ -330,10 +337,7 @@ class ThermalInfo(Task):
     @staticmethod
     def _collect_dirs():
         root = ThermalInfo.ROOT
-        dirs = [
-            dir for dir in os.listdir(root)
-            if re.match(r'^thermal_zone\d+$', dir)
-        ]
+        dirs = [dir for dir in os.listdir(root) if re.match(r'^thermal_zone\d+$', dir)]
         dirs = sorted(dirs)
         dirs = [os.path.join(root, dir) for dir in dirs]
         return dirs
