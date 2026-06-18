@@ -17,10 +17,6 @@ jobs:
           python-version: '3.x'
       - name: Run black
         uses: psf/black@stable
-        with:
-          # > Please note that the --check flag is required so that the
-          # > workflow fails if Black finds files that need to be formatted.
-          options: --check --verbose --skip-string-normalization
 
   test:
     strategy:
