@@ -1,3 +1,37 @@
+linux-status (2.4.7-1) unstable; urgency=medium
+
+  [ Egor Tensin ]
+  * workflows/ci: update Python versions
+  * workflows/ci: upgrade action & Python versions
+  * debian: update GPG key
+  * workflows: upgrade actions
+  * debian: error out if required Vagrant plugins are not installed
+  * add dependabot.yml
+  * workflows/ci: remove on: pull_request
+  * workflows: remove on: pull_request
+  * workflows/ci: run the Black linter
+  * reformat files in accordance with Black
+  * workflows/ci: lint in a separate job
+  * workflows/ci: use default Black settings
+  * add .git-blame-ignore-revs
+  * dependabot: enable for branch "debian"
+
+  [ dependabot[bot] ]
+  * build(deps): bump actions/checkout from 6 to 7
+
+  [ dependabot[bot] ]
+  * build(deps): bump actions/checkout from 6 to 7
+
+  [ dependabot[bot] ]
+  * build(deps): bump crazy-max/ghaction-import-gpg from 6 to 7
+
+  [ dependabot[bot] ]
+  * build(deps): bump actions/upload-artifact from 6 to 7
+  * workflows/ci: allow linting to fail on non-master branches
+  * workflows/ci: add a job to publish to AUR
+
+ -- Egor Tensin <egor@tensin.name>  Sat, 20 Jun 2026 15:47:28 +0000
+
 linux-status (2.4.6-1) unstable; urgency=medium
 
   * workflows/ci: upgrade actions
