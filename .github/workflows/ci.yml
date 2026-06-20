@@ -5,6 +5,20 @@ on:
   workflow_dispatch:
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Linting
+    continue-on-error: "${{ github.ref != 'refs/heads/master' }}"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+      - name: Run black
+        uses: psf/black@stable
+
   test:
     strategy:
       matrix:
@@ -22,3 +36,56 @@ jobs:
         run: sudo ./test/test.sh
       - name: Run tests
         run: ./test/test.sh
+
+  aur:
+    name: Publish to AUR
+    needs:
+      - lint
+      - test
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    container:
+      image: archlinux:base-devel
+    steps:
+      # This step must be done before actions/checkout. From the latter's
+      # output:
+      #
+      #     To create a local Git repository instead, add Git 2.18 or higher to the PATH
+      #
+      - name: Install dependencies
+        run: |
+          pacman -Syu --noconfirm git openssh
+
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: aur
+          token: '${{ secrets.GH_TOKEN }}'
+
+      # makepkg for no reason hard-forbids running as root. Kill me now.
+      - name: Add builder user
+        run: |
+          useradd -m -s /bin/bash builder
+          chown -R builder:builder -- "$GITHUB_WORKSPACE"
+
+      - name: Configure SSH
+        run: |
+          mkdir -p /home/builder/.ssh/
+          cat > /home/builder/.ssh/config <<'EOF'
+          StrictHostKeyChecking no
+          EOF
+          cat > /home/builder/.ssh/id_ed25519 <<'EOF'
+          ${{ secrets.SSH_KEY }}
+          EOF
+          chown -R builder:builder /home/builder/.ssh
+          chmod 0600 /home/builder/.ssh/id_ed25519
+
+      - name: Configure git
+        run: |
+          # See https://github.com/actions/checkout#push-a-commit-using-the-built-in-token
+          runuser -u builder -- git -C "$GITHUB_WORKSPACE" config user.name "github-actions[bot]"
+          runuser -u builder -- git -C "$GITHUB_WORKSPACE" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Run maintenance
+        run: |
+          runuser -u builder -- make -C "$GITHUB_WORKSPACE" maintenance

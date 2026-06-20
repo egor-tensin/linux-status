@@ -17,7 +17,6 @@ import traceback
 
 from app import Request, Response
 
-
 DEFAULT_PORT = 18101
 
 
@@ -26,17 +25,17 @@ def script_dir():
 
 
 def default_html_dir():
-    return os.path.join(script_dir(), 'html')
+    return os.path.join(script_dir(), "html")
 
 
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
     ARGS = None
 
     def address_string(self):
-        if 'x-forwarded-for' in self.headers:
-            return self.headers['x-forwarded-for'].split(',')[0].strip()
-        if 'x-real-ip' in self.headers:
-            return self.headers['x-real-ip']
+        if "x-forwarded-for" in self.headers:
+            return self.headers["x-forwarded-for"].split(",")[0].strip()
+        if "x-real-ip" in self.headers:
+            return self.headers["x-real-ip"]
         return super().address_string()
 
     def do_GET(self):
@@ -56,7 +55,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 
 
 def make_server(port):
-    addr = ('', port)
+    addr = ("", port)
     server = http.server.HTTPServer
     if sys.version_info >= (3, 7):
         server = http.server.ThreadingHTTPServer
@@ -67,14 +66,27 @@ def parse_args(args=None):
     if args is None:
         args = sys.argv[1:]
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--port', metavar='PORT',
-                        type=int, default=DEFAULT_PORT,
-                        help='set port number')
-    parser.add_argument('-n', '--disable-power', action='store_true',
-                        help='disable reboot/poweroff requests')
-    parser.add_argument('-d', '--dir', metavar='DIR',
-                        default=default_html_dir(),
-                        help='HTML directory path')
+    parser.add_argument(
+        "-p",
+        "--port",
+        metavar="PORT",
+        type=int,
+        default=DEFAULT_PORT,
+        help="set port number",
+    )
+    parser.add_argument(
+        "-n",
+        "--disable-power",
+        action="store_true",
+        help="disable reboot/poweroff requests",
+    )
+    parser.add_argument(
+        "-d",
+        "--dir",
+        metavar="DIR",
+        default=default_html_dir(),
+        help="HTML directory path",
+    )
     return parser.parse_args(args)
 
 
@@ -90,8 +102,8 @@ def main(args=None):
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print('\nKeyboard interrupt received, exiting...')
+        print("\nKeyboard interrupt received, exiting...")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

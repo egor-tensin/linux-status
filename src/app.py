@@ -81,19 +81,19 @@ class Response:
         self.body = body
 
     def headers(self):
-        yield 'Content-Type', 'text/html; charset=utf-8'
+        yield "Content-Type", "text/html; charset=utf-8"
 
     def encode_body(self):
-        return self.body.encode(errors='replace')
+        return self.body.encode(errors="replace")
 
     def write_as_cgi_script(self):
         self.write_headers_as_cgi_script()
         self.write_body_as_cgi_script()
 
     def write_headers_as_cgi_script(self):
-        print(f'{self.status.value} {self.status.phrase}')
+        print(f"{self.status.value} {self.status.phrase}")
         for name, val in self.headers():
-            print(f'{name}: {val}')
+            print(f"{name}: {val}")
         print()
 
     def write_body_as_cgi_script(self):
@@ -116,7 +116,14 @@ class Response:
 
 
 def run_do(*args, **kwargs):
-    output = subprocess.run(args, stdin=DEVNULL, stdout=PIPE, stderr=STDOUT, universal_newlines=True, **kwargs)
+    output = subprocess.run(
+        args,
+        stdin=DEVNULL,
+        stdout=PIPE,
+        stderr=STDOUT,
+        universal_newlines=True,
+        **kwargs,
+    )
     # Include the output in the exception's message:
     try:
         output.check_returncode()
@@ -145,7 +152,7 @@ class TaskList(Task):
 
     def add(self, name, task):
         if name in self.tasks:
-            raise RuntimeError(f'duplicate task name: {name}')
+            raise RuntimeError(f"duplicate task name: {name}")
         self.tasks[name] = task
 
     def run(self):
@@ -187,13 +194,13 @@ class Systemd(Command):
     @staticmethod
     def make_env():
         env = os.environ.copy()
-        env['SYSTEMD_PAGER'] = ''
-        env['SYSTEMD_COLORS'] = 'no'
+        env["SYSTEMD_PAGER"] = ""
+        env["SYSTEMD_COLORS"] = "no"
         return env
 
     @staticmethod
     def su(user, cmd):
-        new = Systemd('su', '-c', shlex.join(cmd.args), user.name)
+        new = Systemd("su", "-c", shlex.join(cmd.args), user.name)
         new.env = Systemd.fix_su_env(user, cmd.env.copy())
         return new
 
@@ -204,49 +211,49 @@ class Systemd(Command):
         # https://unix.stackexchange.com/q/423632
         # https://unix.stackexchange.com/q/245768
         # https://unix.stackexchange.com/q/434494
-        env['XDG_RUNTIME_DIR'] = user.runtime_dir
+        env["XDG_RUNTIME_DIR"] = user.runtime_dir
         # I'm not sure the bus part works everywhere.
-        bus_path = os.path.join(user.runtime_dir, 'bus')
-        env['DBUS_SESSION_BUS_ADDRESS'] = 'unix:path=' + bus_path
+        bus_path = os.path.join(user.runtime_dir, "bus")
+        env["DBUS_SESSION_BUS_ADDRESS"] = "unix:path=" + bus_path
         return env
 
 
 class Ctl(Systemd):
     def __init__(self, executable, *args):
-        super().__init__(executable, *args, '--full')
+        super().__init__(executable, *args, "--full")
 
     @classmethod
     def system(cls, *args):
-        return cls('--system', *args)
+        return cls("--system", *args)
 
     @classmethod
     def user(cls, *args):
-        return cls('--user', *args)
+        return cls("--user", *args)
 
 
 class Systemctl(Ctl):
     def __init__(self, *args):
-        super().__init__('systemctl', *args)
+        super().__init__("systemctl", *args)
 
 
 class Journalctl(Ctl):
     def __init__(self, *args):
-        super().__init__('journalctl', *args)
+        super().__init__("journalctl", *args)
 
 
 class Loginctl(Systemd):
     def __init__(self, *args):
-        super().__init__('loginctl', *args, '--full')
+        super().__init__("loginctl", *args, "--full")
 
 
 class Docker(Command):
     def __init__(self, *args):
-        super().__init__('docker', *args)
+        super().__init__("docker", *args)
 
 
 class DockerVersion(Docker):
     def __init__(self, *args):
-        super().__init__('version')
+        super().__init__("version")
 
     @staticmethod
     def is_daemon_running():
@@ -259,15 +266,15 @@ class DockerVersion(Docker):
 
 class DockerPs(Docker):
     def __init__(self, *args):
-        super().__init__('ps', *args)
+        super().__init__("ps", *args)
 
     @staticmethod
     def quiet(*args):
-        return DockerPs('--quiet', *args)
+        return DockerPs("--quiet", *args)
 
     @staticmethod
     def get_all_ids():
-        cmd = DockerPs.quiet('--all')
+        cmd = DockerPs.quiet("--all")
         return cmd.now().splitlines()
 
 
@@ -278,7 +285,7 @@ class DockerInspect(Docker):
     FORMAT = '{{printf "%s%c" (json .) 0}}'
 
     def __init__(self, *args):
-        super().__init__('inspect', f'--format={DockerInspect.FORMAT}', *args)
+        super().__init__("inspect", f"--format={DockerInspect.FORMAT}", *args)
 
 
 class DockerStatus(DockerInspect):
@@ -289,7 +296,7 @@ class DockerStatus(DockerInspect):
     def run(self):
         if not self.containers:
             # `docker inspect` requires at least one container argument.
-            return ''
+            return ""
         return super().run()
 
     def result(self):
@@ -297,22 +304,22 @@ class DockerStatus(DockerInspect):
             # `docker inspect` requires at least one container argument.
             return []
         result = super().result()
-        result = result.split('\0')
+        result = result.split("\0")
         result = [json.loads(info) for info in result if info.strip()]
         result = [DockerStatus.filter_info(info) for info in result]
         return result
 
     @staticmethod
     def filter_info(info):
-        assert info['Name'][0] == '/'
+        assert info["Name"][0] == "/"
         return {
-            'exit_code': info['State']['ExitCode'],
-            'health': info['State'].get('Health', {}).get('Status', None),
-            'image': info['Config']['Image'],
+            "exit_code": info["State"]["ExitCode"],
+            "health": info["State"].get("Health", {}).get("Status", None),
+            "image": info["Config"]["Image"],
             # Strip the leading /:
-            'name': info['Name'][1:],
-            'started_at': info['State']['StartedAt'],
-            'status': info['State']['Status'],
+            "name": info["Name"][1:],
+            "started_at": info["State"]["StartedAt"],
+            "status": info["State"]["Status"],
         }
 
 
@@ -325,54 +332,51 @@ class Hostname(Task):
 
 
 class ThermalInfo(Task):
-    ROOT = '/sys/class/thermal'
+    ROOT = "/sys/class/thermal"
 
     @staticmethod
     def _collect_dirs():
         root = ThermalInfo.ROOT
-        dirs = [
-            dir for dir in os.listdir(root)
-            if re.match(r'^thermal_zone\d+$', dir)
-        ]
+        dirs = [dir for dir in os.listdir(root) if re.match(r"^thermal_zone\d+$", dir)]
         dirs = sorted(dirs)
         dirs = [os.path.join(root, dir) for dir in dirs]
         return dirs
 
     @staticmethod
     def _read_temp(dir):
-        with open(os.path.join(dir, 'temp')) as fd:
+        with open(os.path.join(dir, "temp")) as fd:
             temp = fd.read()
             return ThermalInfo._parse_temp(temp)
 
     @staticmethod
     def _parse_temp(temp):
-        if not temp.endswith('\n'):
-            raise RuntimeError('invalid temp file contents: ' + temp)
-        temp = temp.strip('\n')
+        if not temp.endswith("\n"):
+            raise RuntimeError("invalid temp file contents: " + temp)
+        temp = temp.strip("\n")
         try:
             temp = int(temp)
         except ValueError:
-            raise RuntimeError('invalid temp file contents: ' + temp)
+            raise RuntimeError("invalid temp file contents: " + temp)
         return round(temp / 1000, 2)
 
     @staticmethod
     def _read_type(dir):
-        with open(os.path.join(dir, 'type')) as fd:
+        with open(os.path.join(dir, "type")) as fd:
             type = fd.read()
             return ThermalInfo._parse_type(type)
 
     @staticmethod
     def _parse_type(type):
-        if not type.endswith('\n'):
-            raise RuntimeError('invalid type file contents: ' + type)
-        type = type.strip('\n')
+        if not type.endswith("\n"):
+            raise RuntimeError("invalid type file contents: " + type)
+        type = type.strip("\n")
         return type
 
     @staticmethod
     def _read_dir(dir):
         return {
-            'temp': ThermalInfo._read_temp(dir),
-            'type': ThermalInfo._read_type(dir),
+            "temp": ThermalInfo._read_temp(dir),
+            "type": ThermalInfo._read_type(dir),
         }
 
     def run(self):
@@ -396,13 +400,13 @@ class Top(Command):
         # the output contains the flags we want to use.
         if Top.COMMAND is not None:
             return Top.COMMAND
-        help_output = run_do('top', '-h')
-        args = ['top', '-b', '-n', '1', '-w', '512']
-        memory_scaling_args = ['-E', 'm', '-e', 'm']
-        if 'Ee' in help_output:
+        help_output = run_do("top", "-h")
+        args = ["top", "-b", "-n", "1", "-w", "512"]
+        memory_scaling_args = ["-E", "m", "-e", "m"]
+        if "Ee" in help_output:
             args += memory_scaling_args
         else:
-            if '-E, ' in help_output and '-e, ' in help_output:
+            if "-E, " in help_output and "-e, " in help_output:
                 args += memory_scaling_args
         Top.COMMAND = args
         return Top.COMMAND
@@ -410,21 +414,21 @@ class Top(Command):
 
 class Reboot(Command):
     def __init__(self):
-        super().__init__('systemctl', 'reboot')
+        super().__init__("systemctl", "reboot")
 
 
 class Poweroff(Command):
     def __init__(self):
-        super().__init__('systemctl', 'poweroff')
+        super().__init__("systemctl", "poweroff")
 
 
 class InstanceStatus(TaskList):
     def __init__(self, systemctl, journalctl):
         tasks = {
-            'overview': systemctl('status'),
-            'failed': systemctl('list-units', '--failed'),
-            'timers': systemctl('list-timers', '--all'),
-            'journal': journalctl('-b', '--lines=20'),
+            "overview": systemctl("status"),
+            "failed": systemctl("list-units", "--failed"),
+            "timers": systemctl("list-timers", "--all"),
+            "journal": journalctl("-b", "--lines=20"),
         }
         super().__init__(tasks)
 
@@ -433,7 +437,7 @@ class SystemStatus(InstanceStatus):
     def __init__(self):
         super().__init__(Systemctl.system, Journalctl.system)
         if DockerVersion.is_daemon_running():
-            self.add('docker', DockerStatus())
+            self.add("docker", DockerStatus())
 
 
 class UserStatus(InstanceStatus):
@@ -464,16 +468,16 @@ class UserStatusList(TaskList):
 class Status(TaskList):
     def __init__(self):
         tasks = {
-            'hostname': Hostname(),
-            'thermal': ThermalInfo(),
-            'system': SystemStatus(),
-            'user': UserStatusList(),
+            "hostname": Hostname(),
+            "thermal": ThermalInfo(),
+            "system": SystemStatus(),
+            "user": UserStatusList(),
         }
         super().__init__(tasks)
 
 
-User = namedtuple('User', ['uid', 'name'])
-SystemdUser = namedtuple('SystemdUser', ['uid', 'name', 'runtime_dir'])
+User = namedtuple("User", ["uid", "name"])
+SystemdUser = namedtuple("SystemdUser", ["uid", "name", "runtime_dir"])
 
 
 def running_as_root():
@@ -485,7 +489,7 @@ def running_as_root():
 
 def running_as_nobody():
     for user in users():
-        if user.name == 'nobody':
+        if user.name == "nobody":
             return user.uid == os.geteuid()
     return False
 
@@ -500,8 +504,8 @@ def user_instance_active(user):
     # I'm pretty sure this is the way to determine if the user instance is
     # running?
     # Source: https://www.freedesktop.org/software/systemd/man/user@.service.html
-    unit_name = f'user@{user.uid}.service'
-    cmd = Systemctl.system('is-active', unit_name, '--quiet')
+    unit_name = f"user@{user.uid}.service"
+    cmd = Systemctl.system("is-active", unit_name, "--quiet")
     try:
         cmd.now()
         return True
@@ -543,16 +547,16 @@ def human_users():
 # that were running a systemd instance.
 def systemd_users():
     def list_users():
-        output = Loginctl('list-users', '--no-legend').now()
+        output = Loginctl("list-users", "--no-legend").now()
         lines = output.splitlines()
         if not lines:
             return
         for line in lines:
             # This assumes user names cannot contain spaces.
             # loginctl list-users output must be in the UID NAME format.
-            info = line.lstrip().split(' ', 2)
+            info = line.lstrip().split(" ", 2)
             if len(info) < 2:
-                raise RuntimeError(f'invalid `loginctl list-users` output:\n{output}')
+                raise RuntimeError(f"invalid `loginctl list-users` output:\n{output}")
             uid, user = info[0], info[1]
             yield User(uid, user)
 
@@ -560,16 +564,16 @@ def systemd_users():
         user_args = [user.name for user in users]
         if not user_args:
             return None
-        properties = 'UID', 'Name', 'RuntimePath'
-        prop_args = (arg for prop in properties for arg in ('-p', prop))
-        output = Loginctl('show-user', *prop_args, '--value', *user_args).now()
+        properties = "UID", "Name", "RuntimePath"
+        prop_args = (arg for prop in properties for arg in ("-p", prop))
+        output = Loginctl("show-user", *prop_args, "--value", *user_args).now()
         lines = output.splitlines()
         # Assuming that for muptiple users, the properties will be separated by
         # an empty string.
-        groups = split_by(lines, '')
+        groups = split_by(lines, "")
         for group in groups:
             if len(group) != len(properties):
-                raise RuntimeError(f'invalid `loginctl show-user` output:\n{output}')
+                raise RuntimeError(f"invalid `loginctl show-user` output:\n{output}")
             yield SystemdUser(int(group[0]), group[1], group[2])
 
     return show_users(list_users())
@@ -579,35 +583,35 @@ def cgi_one_value(params, name, default=None):
     values = params.get(name, [])
     if not values:
         if default is None:
-            raise ValueError(f'must have at least one value: {name}')
+            raise ValueError(f"must have at least one value: {name}")
         return default
     if len(values) > 1:
-        raise ValueError(f'multiple values are not supported: {name}')
+        raise ValueError(f"multiple values are not supported: {name}")
     return values[0]
 
 
 class Request(Enum):
-    STATUS = 'status'
-    TOP = 'top'
-    THERMAL = 'thermal'
-    REBOOT = 'reboot'
-    POWEROFF = 'poweroff'
+    STATUS = "status"
+    TOP = "top"
+    THERMAL = "thermal"
+    REBOOT = "reboot"
+    POWEROFF = "poweroff"
 
     def __str__(self):
         return self.value
 
     @staticmethod
     def from_http_path(path):
-        if not path or path[0] != '/':
-            raise ValueError('HTTP path must start with a forward slash /')
+        if not path or path[0] != "/":
+            raise ValueError("HTTP path must start with a forward slash /")
         return Request(path[1:])
 
     @staticmethod
     def from_query_string(qs):
         params = urllib.parse.parse_qs(qs, strict_parsing=True)
-        request = cgi_one_value(params, 'what')
+        request = cgi_one_value(params, "what")
         request = Request(request)
-        request.disable_power = int(cgi_one_value(params, 'disable_power', '0'))
+        request.disable_power = int(cgi_one_value(params, "disable_power", "0"))
         return request
 
     def process(self):
@@ -625,12 +629,12 @@ class Request(Enum):
         if self is Request.POWEROFF:
             return Poweroff().complete()
 
-        raise NotImplementedError(f'unknown request: {self}')
+        raise NotImplementedError(f"unknown request: {self}")
 
 
 def process_cgi_request():
     try:
-        request = Request.from_query_string(os.environ['QUERY_STRING'])
+        request = Request.from_query_string(os.environ["QUERY_STRING"])
         request.process().write_as_cgi_script()
     except:
         status = HTTPStatus.INTERNAL_SERVER_ERROR
@@ -642,5 +646,5 @@ def main():
     process_cgi_request()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
