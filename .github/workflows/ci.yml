@@ -66,6 +66,8 @@ jobs:
       - name: Add builder user
         run: |
           useradd -m -s /bin/bash builder
+          passwd -d builder
+          echo 'builder ALL=(ALL) ALL' >> /etc/sudoers
           chown -R builder:builder -- "$GITHUB_WORKSPACE"
 
       - name: Configure SSH
