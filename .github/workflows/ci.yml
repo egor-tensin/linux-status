@@ -57,7 +57,7 @@ jobs:
           pacman -Syu --noconfirm git openssh
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: aur
           token: '${{ secrets.GH_TOKEN }}'
