@@ -1,3 +1,30 @@
+linux-status (2.4.8-1) unstable; urgency=medium
+
+  [ Egor Tensin ]
+  * workflows/ci: passwordless sudo for builder
+
+  [ dependabot[bot] ]
+  * build(deps): bump actions/checkout from 6 to 7
+
+  [ dependabot[bot] ]
+  * build(deps): bump actions/checkout from 6 to 7
+
+  [ dependabot[bot] ]
+  * build(deps): bump actions/setup-python from 6 to 7
+
+  [ dependabot[bot] ]
+  * build(deps): bump actions/setup-python from 6 to 7
+  * remove annoying trailing period from repo URLs
+  * debian: modernize apt usage
+  * debian: fix gbp dch
+  * debian: add changelog target to Makefile
+  * debian: fix the tag target & add push target
+  * debian: add a comment to gbp.conf
+  * debian: prettier Makefile
+  * debian/README: actualize
+
+ -- Egor Tensin <egor@tensin.name>  Thu, 24 Sep 2026 15:10:31 +0000
+
 linux-status (2.4.7-1) unstable; urgency=medium
 
   [ Egor Tensin ]
