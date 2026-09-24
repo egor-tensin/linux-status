@@ -38,13 +38,7 @@ deps:
 
 .PHONY: dch
 dch:
-	gbp dch --distribution=unstable
-
-.PHONY: commit
-commit:
-	cd -- '$(call escape,$(root))' && \
-		version="$$( dpkg-parsechangelog --show-field Version )" && \
-		git commit -m "debian: $$version"
+	gbp dch --distribution=unstable --commit
 
 .PHONY: tag
 tag:
