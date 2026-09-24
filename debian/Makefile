@@ -45,7 +45,11 @@ changelog: dch
 
 .PHONY: tag
 tag:
-	cd -- '$(call escape,$(root))' && gbp buildpackage --git-tag-only
+	gbp tag
+
+.PHONY: push
+push:
+	env GIT_SSH_COMMAND='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' gbp push
 
 .PHONY: src/test
 src/test:
