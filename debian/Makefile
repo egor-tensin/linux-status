@@ -77,7 +77,7 @@ dist/update:
 
 .PHONY: dist/test
 dist/test:
-	cd -- '$(call escape,$(root))' && gbp buildpackage --git-ignore-new --git-pbuilder '--git-dist=$(call escape,$(DIST))'
+	cd -- '$(call escape,$(root))' && gbp buildpackage --git-pbuilder '--git-dist=$(call escape,$(DIST))' --git-ignore-new
 
 .PHONY: dist
 dist:
