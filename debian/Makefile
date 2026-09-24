@@ -40,6 +40,9 @@ deps:
 dch:
 	gbp dch --distribution=unstable --commit
 
+.PHONY: changelog
+changelog: dch
+
 .PHONY: tag
 tag:
 	cd -- '$(call escape,$(root))' && gbp buildpackage --git-tag-only
