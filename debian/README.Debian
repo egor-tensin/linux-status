@@ -8,33 +8,32 @@ then `vagrant ssh`.  The project will be in /vagrant; kill the VM using
 There're a bunch of useful one-liners in Makefile.  Everything is built in
 debian/build-area/.
 
-  * Merge the new version to the debian branch:
+  * Merge the new version to the debian branch (cannot be a lightweight tag for
+    the gbp tools to work):
 
       git merge TAG
 
-  * Add a changelog entry (you'll need to fix the version manually):
+  * Add a changelog entry & tag it:
 
-      make dch
+      make changelog
+      make tag
 
   * To test, make a source package:
 
-      make src
+      make src       # Or:
       make src/test  # Ignores uncommitted changes.
 
   * To test, make a binary package:
 
-      make bin
+      make bin       # Or:
       make bin/test  # Ignores uncommmited changes.
 
-  * Commit the changes:
+  * You can push the changes to GitHub now:
 
-      git add changelog
-      make commit
-      make tag
+      make push
 
-  * You can push the changes to GitHub now, and it should take care of the
-    rest.  Otherwise, you can upload the package to Launchpad manually as
-    described below.
+    The rest should be taken care of by GitHub Actions.  Otherwise, you can
+    upload the package to Launchpad manually as described below.
 
   * Upload the source package to the PPA:
 
