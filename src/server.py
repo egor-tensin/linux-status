@@ -2,7 +2,7 @@
 
 # Copyright (c) 2021 Egor Tensin <egor@tensin.name>
 # This file is part of the "linux-status" project.
-# For details, see https://github.com/egor-tensin/linux-status.
+# For details, see https://github.com/egor-tensin/linux-status
 # Distributed under the MIT License.
 
 # This script launches a HTTP server and uses app.py for processing a set of
