@@ -1,4 +1,4 @@
-include prelude.mk
+include ../prelude.mk
 
 NAME      ?= Egor Tensin
 EMAIL     ?= egor@tensin.name
