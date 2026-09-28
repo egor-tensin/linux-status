@@ -21,9 +21,6 @@ this_dir   := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 root       := $(this_dir)/..
 build_area := $(this_dir)/build-area
 
-.PHONY: DO
-DO:
-
 .PHONY: deps
 deps:
 	apt update
