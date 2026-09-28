@@ -1,3 +1,10 @@
+linux-status (2.4.11-1) unstable; urgency=medium
+
+  * consistent prelude.mk
+  * Makefile: fix Debian builds
+
+ -- Egor Tensin <egor@tensin.name>  Mon, 28 Sep 2026 15:48:05 +0000
+
 linux-status (2.4.10-1) unstable; urgency=medium
 
   * remove .git-blame-ignore-revs from export-ignore
