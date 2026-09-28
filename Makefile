@@ -21,4 +21,4 @@ install:
 
 	cp -dr --preserve=mode,timestamp -- html '$(call escape,$(DESTDIR))/srv/$(call escape,$(PKG_NAME))'
 
-	install -D -m 0644 -t '$(call escape,$(DESTDIR))/usr/lib/systemd/system' 'dist/systemd/$(call escape,$(PKG_NAME)).service'
+	install -D -m 0644 -t '$(call escape,$(DESTDIR))/lib/systemd/system' 'dist/systemd/$(call escape,$(PKG_NAME)).service'
