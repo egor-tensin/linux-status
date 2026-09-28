@@ -1,3 +1,13 @@
+linux-status (2.4.10-1) unstable; urgency=medium
+
+  * remove .git-blame-ignore-revs from export-ignore
+  * debian/Makefile: remove unused stuff
+  * add Makefile with install: target
+  * workflows/ci: don't publish to AUR on Debian tags
+  * switch builds to `make install`
+
+ -- Egor Tensin <egor@tensin.name>  Mon, 28 Sep 2026 07:26:48 +0000
+
 linux-status (2.4.8-1) unstable; urgency=medium
 
   [ Egor Tensin ]
