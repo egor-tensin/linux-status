@@ -1,3 +1,13 @@
+linux-status (2.4.13-1) unstable; urgency=medium
+
+  * test: rework using the approach from my other projects
+  * workflows/ci: move AUR setup steps to aur:Makefile
+  * workflows/ci: minor formatting fixes
+  * workflows: add some comments
+  * debian: ditch Vagrant, switch to Docker
+
+ -- Egor Tensin <egor@tensin.name>  Sun, 04 Oct 2026 16:41:39 +0000
+
 linux-status (2.4.11-1) unstable; urgency=medium
 
   * consistent prelude.mk
