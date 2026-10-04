@@ -12,6 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
         with:
+          # Fetch tags, required for gbp.
           fetch-depth: 0
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v7

@@ -12,6 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
         with:
+          # Fetch tags, required for gbp.
           fetch-depth: 0
       - name: Install dependencies
         run: sudo make -C debian deps
