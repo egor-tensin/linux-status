@@ -48,6 +48,9 @@ jobs:
       && !startsWith(github.ref, 'refs/tags/debian/')
     container:
       image: archlinux:base-devel
+      env:
+        SSH_KEY: |
+          ${{ secrets.SSH_KEY }}
     steps:
       # This step must be done before actions/checkout. From the latter's
       # output:
@@ -57,39 +60,11 @@ jobs:
       - name: Install dependencies
         run: |
           pacman -Syu --noconfirm git openssh
-
       - name: Checkout
         uses: actions/checkout@v7
         with:
           ref: aur
           token: '${{ secrets.GH_TOKEN }}'
-
-      # makepkg for no reason hard-forbids running as root. Kill me now.
-      - name: Add builder user
-        run: |
-          useradd -m -s /bin/bash builder
-          passwd -d builder
-          echo 'builder ALL=(ALL) ALL' >> /etc/sudoers
-          chown -R builder:builder -- "$GITHUB_WORKSPACE"
-
-      - name: Configure SSH
-        run: |
-          mkdir -p /home/builder/.ssh/
-          cat > /home/builder/.ssh/config <<'EOF'
-          StrictHostKeyChecking no
-          EOF
-          cat > /home/builder/.ssh/id_ed25519 <<'EOF'
-          ${{ secrets.SSH_KEY }}
-          EOF
-          chown -R builder:builder /home/builder/.ssh
-          chmod 0600 /home/builder/.ssh/id_ed25519
-
-      - name: Configure git
-        run: |
-          # See https://github.com/actions/checkout#push-a-commit-using-the-built-in-token
-          runuser -u builder -- git -C "$GITHUB_WORKSPACE" config user.name "github-actions[bot]"
-          runuser -u builder -- git -C "$GITHUB_WORKSPACE" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
       - name: Run maintenance
         run: |
-          runuser -u builder -- make -C "$GITHUB_WORKSPACE" maintenance
+          make -C "$GITHUB_WORKSPACE" ci
