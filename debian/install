@@ -1,7 +1,0 @@
-LICENSE.txt usr/share/linux-status
-
-README.md usr/share/doc/linux-status
-doc usr/share/doc/linux-status
-
-src/*.py srv/linux-status
-html srv/linux-status
