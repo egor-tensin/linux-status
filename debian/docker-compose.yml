@@ -1,0 +1,13 @@
+services:
+  builder:
+    build:
+      context: ..
+      dockerfile: debian/Dockerfile
+    cap_add:
+      - SYS_ADMIN
+    environment:
+      SSH_AUTH_SOCK: /ssh-agent.sock
+    volumes:
+      - '../:/app'
+      - /run/user/1000/gnupg/S.gpg-agent.extra:/tmp/gnupg/S.gpg-agent
+      - "${SSH_AUTH_SOCK}:/ssh-agent.sock"

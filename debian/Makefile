@@ -1,25 +1,26 @@
 include ../prelude.mk
 
-NAME      ?= Egor Tensin
-EMAIL     ?= egor@tensin.name
 PPA_OWNER ?= egor-tensin
 PPA_NAME  ?= linux-status
 GPG_KEY   ?= 09AEA2BAD52882A1AF9D6042F218DB829A9905B5
 DIST      ?= focal
 
-$(eval $(call noexpand,NAME))
-$(eval $(call noexpand,EMAIL))
 $(eval $(call noexpand,PPA_OWNER))
 $(eval $(call noexpand,PPA_NAME))
 $(eval $(call noexpand,GPG_KEY))
 $(eval $(call noexpand,DIST))
 
-export NAME
-export EMAIL
-
 this_dir   := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 root       := $(this_dir)/..
 build_area := $(this_dir)/build-area
+
+.PHONY: docker
+docker:
+	uid="$$( stat -c '%u' . )" && \
+	gid="$$( stat -c '%g' . )" && \
+	docker compose build --build-arg UID="$$uid" --build-arg GID="$$gid"
+	docker compose run --rm builder
+	docker compose down -v
 
 .PHONY: deps
 deps:
@@ -30,8 +31,10 @@ deps:
 		devscripts \
 		dh-make \
 		dput \
+		fakeroot \
 		git-buildpackage \
-		vim
+		openssh-client \
+		sudo
 
 .PHONY: dch
 dch:

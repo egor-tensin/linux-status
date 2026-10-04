@@ -1,9 +1,8 @@
 linux-status for Debian
 ----------------------
 
-There's a Vagrantfile to make maintenance easier.  To start, use `vagrant up`,
-then `vagrant ssh`.  The project will be in /vagrant; kill the VM using
-`vagrant destroy -f` when you're done.
+There's a Dockerfile to make maintenance easier.  To start, run `make docker`;
+on exit from the shell, the container will be brought down.
 
 There're a bunch of useful one-liners in Makefile.  Everything is built in
 debian/build-area/.
