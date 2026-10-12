@@ -16,20 +16,22 @@ https://tensin.name/status/
 Installation
 ------------
 
-* For Arch Linux, use the [AUR package].
-* For Ubuntu, use the [PPA].
-
-[AUR package]: https://aur.archlinux.org/packages/linux-status/
-[PPA]: https://launchpad.net/~egor-tensin/+archive/ubuntu/linux-status
-
-Control the app using the `linux-status` systemd unit.
+* Arch Linux: [AUR](https://aur.archlinux.org/packages/linux-status)
+* Ubuntu: [PPA](https://launchpad.net/~egor-tensin/+archive/ubuntu/linux-status)
 
 Usage
 -----
 
-To manually start a web server on port 18101, run:
+* Linux packages provide the `linux-status` systemd unit, which runs the web
+server on port 18101.
 
-    > ./src/server.py
+* To manually start a web server on port 18101, run:
+
+      > ./src/server.py
+
+* View usage details:
+
+      > ./src/server.py -h
 
 Screenshot
 ----------
