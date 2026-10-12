@@ -1,3 +1,10 @@
+linux-status (2.4.14-1) unstable; urgency=medium
+
+  * debian: remove redundant "install" file
+  * README: update
+
+ -- Egor Tensin <egor@tensin.name>  Mon, 12 Oct 2026 07:34:49 +0000
+
 linux-status (2.4.13-1) unstable; urgency=medium
 
   * test: rework using the approach from my other projects
