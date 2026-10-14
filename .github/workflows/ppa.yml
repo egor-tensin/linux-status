@@ -14,6 +14,7 @@ jobs:
         with:
           # Fetch tags, required for gbp.
           fetch-depth: 0
+          submodules: recursive
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v7
         with:
