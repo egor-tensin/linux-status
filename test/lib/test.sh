@@ -3,16 +3,13 @@
 # For details, see https://github.com/egor-tensin/linux-status
 # Distributed under the MIT License.
 
-test_should_fail=
-test_root_dir=
-
 test_server_port=35605
 test_server_pid=
 
 _test_run_server() {
     log "Starting up server..."
-    log_run "$script_dir/../src/server.py" --port "$test_server_port"
-    "$script_dir/../src/server.py" --port "$test_server_port" >&2 &
+    log_run "$tests_dir/../src/server.py" --port "$test_server_port"
+    "$tests_dir/../src/server.py" --port "$test_server_port" >&2 &
     test_server_pid="$!"
     log "Server's PID: $test_server_pid"
     sleep 5
@@ -32,11 +29,7 @@ test_setup() {
     _test_run_server
 }
 
-test_cleanup_default() {
-    if [ -n "$test_root_dir" ]; then
-        log "Removing test's root directory: $test_root_dir"
-        rm -rf -- "$test_root_dir"
-    fi
+test_cleanup() {
     _test_kill_server
 }
 
