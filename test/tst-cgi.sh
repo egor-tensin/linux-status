@@ -26,7 +26,7 @@ _test_cgi() {
     local query_string="what=$what"
     log "Running CGI test for query string: $query_string"
 
-    QUERY_STRING="$query_string" "$script_dir/../src/app.py" > "$test_cgi_response"
+    QUERY_STRING="$query_string" "$tests_dir/../src/app.py" > "$test_cgi_response"
 
     _test_cgi_check_status
     test_check_output "$test_cgi_response" "$@"

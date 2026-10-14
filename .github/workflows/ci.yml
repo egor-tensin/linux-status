@@ -35,14 +35,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          submodules: recursive
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
           python-version: '${{ matrix.python-version }}'
       - name: Run tests as root
-        run: sudo ./test/main.sh
+        run: sudo ./test/runner/main.sh
       - name: Run tests
-        run: ./test/main.sh
+        run: ./test/runner/main.sh
 
   aur:
     name: Publish to AUR
@@ -71,6 +73,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           ref: aur
+          submodules: recursive
           token: '${{ secrets.GH_TOKEN }}'
       - name: Run maintenance
         run: |
