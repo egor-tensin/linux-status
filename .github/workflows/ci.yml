@@ -4,20 +4,28 @@ on:
   push:
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   lint:
     runs-on: ubuntu-latest
     name: Linting
     continue-on-error: "${{ github.ref != 'refs/heads/master' }}"
+    permissions:
+      security-events: write
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
           python-version: '3.x'
       - name: Run black
         uses: psf/black@stable
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@v0.7.1
 
   test:
     strategy:
@@ -31,20 +39,21 @@ jobs:
           - '3.14'
           - '3.x'
     runs-on: ubuntu-latest
-    name: 'Python ${{ matrix.python-version }}'
+    name: Python ${{ matrix.python-version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
         with:
+          persist-credentials: false
           submodules: recursive
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
-          python-version: '${{ matrix.python-version }}'
+          python-version: ${{ matrix.python-version }}
       - name: Run tests as root
-        run: sudo ./test/runner/main.sh
+        run: sudo ./test/runner/harness
       - name: Run tests
-        run: ./test/runner/main.sh
+        run: ./test/runner/harness
 
   aur:
     name: Publish to AUR
@@ -57,9 +66,8 @@ jobs:
       && !startsWith(github.ref, 'refs/tags/debian/')
     container:
       image: archlinux:base-devel
-      env:
-        SSH_KEY: |
-          ${{ secrets.SSH_KEY }}
+    permissions:
+      contents: write
     steps:
       # This step must be done before actions/checkout. From the latter's
       # output:
@@ -72,9 +80,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
         with:
+          persist-credentials: true
           ref: aur
           submodules: recursive
-          token: '${{ secrets.GH_TOKEN }}'
       - name: Run maintenance
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
         run: |
           make -C "$GITHUB_WORKSPACE" ci

@@ -4,8 +4,19 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 7
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
     target-branch: debian
+    cooldown:
+      default-days: 7
+  - package-ecosystem: gitsubmodule
+    directories:
+      - '**/*'
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
