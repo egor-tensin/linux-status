@@ -1,3 +1,16 @@
+linux-status (2.4.16-1) unstable; urgency=medium
+
+  * test: upgrade test-harness
+  * test: upgrade test-harness
+  * ditch .git-blame-ignore-revs, who cares
+  * dependabot: check git submodules
+  * fix zizmor warnings & some linting
+  * workflows/ci: run zizmor
+  * fix zizmor warnings
+  * workflows/ppa: some secrets were renamed
+
+ -- Egor Tensin <egor@tensin.name>  Wed, 21 Oct 2026 08:44:15 +0000
+
 linux-status (2.4.15-1) unstable; urgency=medium
 
   * test: migrate to test-harness
