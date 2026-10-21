@@ -21,8 +21,8 @@ jobs:
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v7
         with:
-          gpg_private_key: '${{ secrets.GPG_PRIVATE_KEY }}'
-          passphrase: '${{ secrets.GPG_PASSPHRASE }}'
+          gpg_private_key: ${{ secrets.LAUNCHPAD_GPG_KEY }}
+          passphrase: ${{ secrets.LAUNCHPAD_GPG_PASSPHRASE }}
       - name: Install dependencies
         run: sudo make -C debian deps
       - name: Create cowbuilder image
